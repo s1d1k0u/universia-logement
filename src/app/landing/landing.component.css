@@ -1,0 +1,6 @@
+.bg-custom {
+  background-image: url("/assets/images/campus-final.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
