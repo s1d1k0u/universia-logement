@@ -6,6 +6,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-reservation',
@@ -22,6 +23,8 @@ export class NewReservationComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
+  constructor(private router: Router) {}
+
   get registrationNumber() {
     return this.studentForm.get('registrationNumber');
   }
@@ -31,6 +34,11 @@ export class NewReservationComponent {
   }
 
   onSubmit() {
-    console.log(this.studentForm.value);
+    // @TODO: Implement onSubmit method for new reservation
+    if (!this.studentForm.invalid) {
+      console.log(this.studentForm.value);
+      this.router.navigate(['/profil']);
+      return;
+    }
   }
 }
