@@ -1,9 +1,12 @@
 <header
   class="bg-white/25 border-gray-200 px-2 lg:px-6 dark:bg-slate-100 shadow-lg sticky top-0 z-50"
 >
-  <nav class="px-4 lg:px-6 py-2.5">
-    <div class="flex flex-wrap items-center mx-auto max-w-screen-xl">
-      <div class="flex items-center flex-1">
+  <nav class="py-2.5 flex justify-between items-center">
+    <div class="flex flex-wrap items-center max-w-screen-xl">
+      <div class="flex items-center flex-1 space-x-2">
+        <div class="flex justify-between items-center">
+          <app-sidebar></app-sidebar>
+        </div>
         <a href="https://universiapolis.ma/" class="flex items-center">
           <img
             src="/assets/images/Logo-Universiapolis.png"
@@ -44,13 +47,79 @@
           </ul>
         </div>
       </div>
-      <div class="flex items-center">
-        <a
-          routerLink="/nouvelle-reservation"
-          class="hidden lg:block focus:ring-4 focus:ring-violet-300 lg:py-2.5 mr-2 hover:bg-primary-700 focus:outline-none bg-violet-600 text-white md:cursor-pointer px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:bg-violet-700 hover:shadow-lg active:transform active:scale-95"
-          >Réservez</a
+    </div>
+    <!-- Profile -->
+    <div class="flex">
+      <div class="w-full flex justify-between items-center">
+        <!-- Welcome Box & Menu -->
+        <div
+          [class]="
+            isMenuOpen
+              ? 'relative ring-2 ring-indigo-500 ring-opacity-50'
+              : 'relative'
+          "
         >
-        <app-sidebar></app-sidebar>
+          <button
+            (click)="isMenuOpen = !isMenuOpen"
+            class="flex items-center space-x-1 p-2 rounded-lg hover:bg-gray-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span class="text-gray-700 hidden md:inline-block">User</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div
+            *ngIf="isMenuOpen"
+            class="absolute right-0 mt-2 w-52 bg-white rounded-md shadow-lg py-1"
+          >
+            <button
+              (click)="logout()"
+              class="flex items-center md:cursor-pointer w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
