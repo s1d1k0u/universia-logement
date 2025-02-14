@@ -1,0 +1,56 @@
+<div
+  class="w-full min-h-[70vh] bg-custom py-12 px-4 bg-cover bg-center flex items-center justify-center relative"
+>
+  <!-- Overlay for better text readability -->
+  <div class="absolute inset-0 bg-black/45"></div>
+  <!-- Content -->
+  <div class="min-h-full py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-center text-3xl font-bold text-gray-900 mb-8">
+        Nouvelle Réservation
+      </h2>
+
+      <form class="space-y-6">
+        <div>
+          <label
+            for="matricule"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Numéro Étudiant (Matricule)
+          </label>
+          <input
+            type="text"
+            id="matricule"
+            name="matricule"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
+            placeholder="Entrez votre numéro étudiant"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            Adresse Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
+            placeholder="Entrez votre email"
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="w-full md:cursor-pointer flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-violet-500/50 transition-colors duration-200"
+          >
+            Commencez
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
