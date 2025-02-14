@@ -1,0 +1,92 @@
+<button
+  (click)="isOpen = !isOpen"
+  type="button"
+  class="inline-flex items-center cursor-pointer p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-violet-600"
+  aria-controls="mobile-menu-2"
+  [attr.aria-expanded]="isOpen"
+>
+  <span class="sr-only">Open main menu</span>
+  <svg
+    [class.hidden]="isOpen"
+    class="w-6 h-6"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+      clip-rule="evenodd"
+    ></path>
+  </svg>
+  <svg
+    [class.hidden]="!isOpen"
+    class="w-6 h-6"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+      clip-rule="evenodd"
+    ></path>
+  </svg>
+</button>
+<!-- Overlay -->
+<div
+  *ngIf="isOpen"
+  (click)="toggleMenu()"
+  class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden"
+></div>
+
+<!-- Sidebar -->
+<div
+  class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform transition-transform duration-300 ease-in-out md:hidden"
+  [class.translate-x-0]="isOpen"
+  [class.-translate-x-full]="!isOpen"
+>
+  <div class="flex flex-col h-full">
+    <!-- Navigation Links -->
+    <nav class="flex-1 overflow-y-auto">
+      <ul class="flex flex-col p-4 space-y-2">
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="bg-blue-50 text-blue-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
+            (click)="toggleMenu()"
+          >
+            <i class="fas fa-home text-lg"></i>
+            <span class="font-medium">Accueil</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="bg-blue-50 text-blue-600"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
+            (click)="toggleMenu()"
+          >
+            <i class="fas fa-building text-lg"></i>
+            <span class="font-medium">Vos réservations</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="bg-blue-50 text-blue-600"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-100 active:bg-gray-200"
+            (click)="toggleMenu()"
+          >
+            <i class="fas fa-users text-lg"></i>
+            <span class="font-medium">Contact</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
