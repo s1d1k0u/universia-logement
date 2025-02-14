@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
   ArrowRight,
   ArrowLeft,
@@ -9,6 +8,7 @@ import {
   Building,
   LucideAngularModule,
 } from 'lucide-angular';
+import { ReservationCheckFormComponent } from '../components/reservation-check-form/reservation-check-form.component';
 
 interface Amenagement {
   title: string;
@@ -23,7 +23,7 @@ interface AccommodationType {
 
 @Component({
   selector: 'app-landing',
-  imports: [LucideAngularModule, RouterLink, CommonModule],
+  imports: [LucideAngularModule, CommonModule, ReservationCheckFormComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })

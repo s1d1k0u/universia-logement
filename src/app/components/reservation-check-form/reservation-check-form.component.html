@@ -1,0 +1,80 @@
+<form
+  [formGroup]="reservationForm"
+  (submit)="onSubmit()"
+  class="max-w-xl mx-auto backdrop-blur-sm bg-white/10 p-6 rounded-2xl shadow-lg"
+>
+  <div class="flex flex-col gap-3 h-40 md:h-24">
+    <!-- Input and button row -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <div class="flex-1">
+        <input
+          type="text"
+          id="reservationCode"
+          name="reservationCode"
+          formControlName="reservationCode"
+          placeholder="Entrez votre code de réservation"
+          class="w-full px-4 py-3 rounded-xl border-2 border-transparent bg-white/90 text-gray-800 placeholder-gray-500 font-medium transition-all duration-200 focus:outline-none focus:border-violet-500 focus:bg-white"
+        />
+      </div>
+      <div>
+        <p
+          *ngIf="
+            reservationCodeControl?.invalid && reservationCodeControl?.touched
+          "
+          class="text-red-500 md:hidden text-sm font-semibold text-left"
+        >
+          <span *ngIf="reservationCodeControl?.errors?.['required']"
+            >* Reservation code is required.</span
+          >
+          <span *ngIf="reservationCodeControl?.errors?.['pattern']"
+            >* Code must be alphanumeric (A-Z, a-z, 0-9).</span
+          >
+        </p>
+      </div>
+      <button
+        type="submit"
+        class="w-full sm:w-auto bg-violet-600 disabled:bg-violet-200 disabled:text-slate-600 disabled:md:cursor-not-allowed md:cursor-pointer text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:bg-violet-700 hover:shadow-lg active:transform active:scale-95"
+        [disabled]="reservationCodeControl?.invalid"
+      >
+        Consultez
+      </button>
+    </div>
+
+    <!-- Error messages -->
+    <div>
+      <p
+        *ngIf="
+          reservationCodeControl?.invalid && reservationCodeControl?.touched
+        "
+        class="hidden md:block text-red-500 text-sm font-semibold text-left"
+      >
+        <span *ngIf="reservationCodeControl?.errors?.['required']"
+          >* Reservation code is required.</span
+        >
+        <span *ngIf="reservationCodeControl?.errors?.['pattern']"
+          >* Code must be alphanumeric (A-Z, a-z, 0-9).</span
+        >
+      </p>
+    </div>
+  </div>
+
+  <!-- Alternative Action -->
+  <div class="flex items-center justify-center gap-3 mt-2">
+    <div class="h-px w-12 bg-white/20"></div>
+    <span class="text-gray-300 text-sm">ou</span>
+    <div class="h-px w-12 bg-white/20"></div>
+  </div>
+
+  <!-- Create New Reservation Link -->
+  <a
+    routerLink="/nouvelle-reservation"
+    class="mt-4 inline-flex items-center group text-violet-300 hover:text-violet-200 font-medium transition-colors duration-200"
+  >
+    <span>Créez une nouvelle réservation</span>
+    <i-lucide
+      [img]="arrowRight"
+      class="ml-2 transition-transform duration-200 group-hover:translate-x-1"
+    >
+    </i-lucide>
+  </a>
+</form>
