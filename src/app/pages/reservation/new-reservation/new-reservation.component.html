@@ -4,13 +4,13 @@
   <!-- Overlay for better text readability -->
   <div class="absolute inset-0 bg-black/45"></div>
   <!-- Content -->
-  <div class="min-h-full py-12 px-4 sm:px-6 lg:px-8 relative">
+  <div class="min-h-full py-12 px-4 md:px-6 lg:px-8 relative">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
       <h2 class="text-center text-3xl font-bold text-gray-900 mb-8">
         Nouvelle Réservation
       </h2>
 
-      <form class="space-y-6">
+      <form class="space-y-4" [formGroup]="studentForm" (submit)="onSubmit()">
         <div>
           <label
             for="matricule"
@@ -22,10 +22,24 @@
             type="text"
             id="matricule"
             name="matricule"
+            formControlName="registrationNumber"
             required
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
-            placeholder="Entrez votre numéro étudiant"
+            placeholder="Entrez votre matricule"
           />
+          <div class="h-2 md:h-4 mb-1 md:mb-0">
+            <p
+              *ngIf="registrationNumber?.invalid && registrationNumber?.touched"
+              class="text-red-500 text-xs font-semibold text-left"
+            >
+              <span *ngIf="registrationNumber?.errors?.['required']"
+                >* Veuillez renseigner votre matricule.</span
+              >
+              <span *ngIf="registrationNumber?.errors?.['pattern']"
+                >* Entrez le matricule correct.</span
+              >
+            </p>
+          </div>
         </div>
 
         <div>
@@ -36,16 +50,31 @@
             type="email"
             id="email"
             name="email"
+            formControlName="email"
             required
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
             placeholder="Entrez votre email"
           />
+          <div class="h-2 md:h-4 mb-1 md:mb-0">
+            <p
+              *ngIf="email?.invalid && email?.touched"
+              class="text-red-500 text-xs font-semibold text-left"
+            >
+              <span *ngIf="email?.errors?.['required']"
+                >* Veuillez renseigner votre email.</span
+              >
+              <span *ngIf="email?.errors?.['email']"
+                >* Entrez l'email correct.</span
+              >
+            </p>
+          </div>
         </div>
 
-        <div>
+        <div class="mt-4 md:mt-0">
           <button
             type="submit"
-            class="w-full md:cursor-pointer flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-violet-500/50 transition-colors duration-200"
+            class="w-full md:cursor-pointer disabled:bg-violet-200 disabled:text-slate-600 disabled:md:cursor-not-allowed flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-violet-500/50 transition-colors duration-200"
+            [disabled]="studentForm.invalid"
           >
             Commencez
           </button>
