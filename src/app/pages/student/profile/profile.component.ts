@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -21,7 +22,7 @@ export class ProfileComponent {
   });
   isSubmitting = false;
 
-  constructor() {
+  constructor(private router: Router) {
     this.profileForm.patchValue({
       firstName: 'John',
       lastName: 'Doe',
@@ -46,6 +47,7 @@ export class ProfileComponent {
       this.isSubmitting = true;
       console.log(this.profileForm.value);
       this.isSubmitting = false;
+      this.router.navigate(['/choix-logement']);
       return;
     }
   }
