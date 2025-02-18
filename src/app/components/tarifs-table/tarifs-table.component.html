@@ -1,0 +1,42 @@
+<div class="bg-gray-50 rounded-lg p-4">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">{{ title }}</h3>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-purple-600">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+          >
+            Facturable
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+          >
+            Montant
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+          >
+            Mode Versement
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr
+          *ngFor="let fee of fees"
+          class="hover:bg-gray-100 transition-colors"
+        >
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ fee.name }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ fee.amount }} €
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ fee.paymentType }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
