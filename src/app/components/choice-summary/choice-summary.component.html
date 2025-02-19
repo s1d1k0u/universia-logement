@@ -1,0 +1,38 @@
+<div class="bg-gray-50 rounded-lg p-4">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">
+    {{ data.header }}
+  </h3>
+  <div class="overflow-x-auto">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-4 rounded-lg"
+    >
+      <div class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-500">Résidence</h4>
+        <p class="text-gray-900">
+          {{ data.residence }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-500">Aménagement</h4>
+        <p class="text-gray-900">
+          {{ data.accomodation }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-500">Bâtiment</h4>
+        <p class="text-gray-900">
+          {{ data.building }}
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-500">Appartement</h4>
+        <p class="text-gray-900">
+          {{ data.apartment ?? "Non spécifié" }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
