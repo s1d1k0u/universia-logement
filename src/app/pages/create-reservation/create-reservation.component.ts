@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,7 +7,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ChevronRight, LucideAngularModule } from 'lucide-angular';
+import { ChevronRight, LucideAngularModule, EyeOff, Eye } from 'lucide-angular';
+import { PrintServiceService } from '../../services/print-service.service';
+import { TarifsTableComponent } from '../../components/tarifs-table/tarifs-table.component';
+import { ChoiceSummaryComponent } from '../../components/choice-summary/choice-summary.component';
 
 interface Fee {
   name: string;
@@ -33,31 +36,51 @@ interface Residency {
   buildings?: Building[];
 }
 
+enum BookingStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  ALTERNATIVE_OFFERED = 'ALTERNATIVE_OFFERED',
+}
+
 @Component({
   selector: 'app-create-reservation',
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LucideAngularModule,
+    TarifsTableComponent,
+    ChoiceSummaryComponent,
+  ],
   templateUrl: './create-reservation.component.html',
   styleUrl: './create-reservation.component.css',
 })
 export class CreateReservationComponent {
-  bookingForm: FormGroup = new FormGroup({
-    firstChoiceResidence: new FormControl('', Validators.required),
-    firstChoiceAccommodationType: new FormControl('', Validators.required),
-    firstChoiceBuilding: new FormControl(''),
-    firstChoiceApartment: new FormControl(''),
-    firstChoiceRoom: new FormControl(''),
-    secondChoiceResidence: new FormControl('', Validators.required),
-    secondChoiceAccommodationType: new FormControl('', Validators.required),
-    secondChoiceBuilding: new FormControl(''),
-    secondChoiceApartment: new FormControl(''),
-    secondChoiceRoom: new FormControl(''),
-  });
+  bookingForm: FormGroup;
+  private formBuilder = inject(FormBuilder);
+
+  /**
+   * This component is a 4 step form
+   * On the first step the user should choose
+   * the residence, the type of accomodation and the building
+   * for the first and second choice
+   * On the second step the user should validate the choices
+   * made on the first step
+   * and if the choices are validated,
+   * the page should display a confirmation message
+   * and 2 buttons one to print the summary and the
+   * other to go show/hide the details of the choices made
+   */
 
   readonly arrowRight = ChevronRight;
+  readonly eyeOff = EyeOff;
+  readonly eye = Eye;
 
-  currentStep = 0;
+  currentStep = 1;
+  isValidated = false;
+  showDetails = false;
 
-  steps = ['Choix des résidences', 'Validation', 'Résumé'];
+  steps = ['Choix des résidences', 'Validation', 'Résumé', 'Résultat'];
 
   firstChoiceAccomodationTypes: AccomodationType[] = [];
   firstChoiceBuildings: Building[] = [];
@@ -358,37 +381,66 @@ export class CreateReservationComponent {
     },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private printService: PrintServiceService
+  ) {
+    this.bookingForm = this.formBuilder.group({
+      firstChoice: this.formBuilder.group({
+        residence: ['', Validators.required],
+        accommodation: ['', Validators.required],
+        building: [''],
+        apartment: [''],
+        room: [''],
+      }),
+      secondChoice: this.formBuilder.group({
+        residence: ['', Validators.required],
+        accommodation: ['', Validators.required],
+        building: [''],
+        apartment: [''],
+        room: [''],
+      }),
+    });
 
-  updateTarifs(choice: string, accommodationType: string) {
-    const residence = this.bookingForm.get(choice)?.value;
-    const type = this.bookingForm.get(accommodationType)?.value;
+    // this.bookingForm = new FormGroup({
+    //   firstChoiceResidence: new FormControl('', Validators.required),
+    //   firstChoiceAccommodationType: new FormControl('', Validators.required),
+    //   firstChoiceBuilding: new FormControl(''),
+    //   firstChoiceApartment: new FormControl(''),
+    //   firstChoiceRoom: new FormControl(''),
+    //   secondChoiceResidence: new FormControl('', Validators.required),
+    //   secondChoiceAccommodationType: new FormControl('', Validators.required),
+    //   secondChoiceBuilding: new FormControl(''),
+    //   secondChoiceApartment: new FormControl(''),
+    //   secondChoiceRoom: new FormControl(''),
+    // });
+  }
+
+  updateTarifs(choice: string) {
+    const residence = this.bookingForm.get(choice)?.get('residence')?.value;
+    const type = this.bookingForm.get(choice)?.get('accommodation')?.value;
+
+    console.log(residence, type);
 
     const fees = this.residencies
       .find((r) => r.value === residence)
       ?.accommodations.find((a) => a.value === type)?.fees;
 
-    if (choice === 'firstChoiceResidence') {
+    if (choice === 'firstChoice') {
       this.firstChoiceFees = fees ?? [];
     } else {
       this.secondChoiceFees = fees ?? [];
     }
   }
 
-  // updatePage(residenceName: string, accommodationType: string) {
-  //   this.updateAccomodationTypes();
-  //   this.updateBuildings();
-  //   this.updateTarifs(residenceName, accommodationType);
-  // }
-
   updateAccomodationTypes(choice: string) {
-    const residency = this.bookingForm.get(choice)?.value;
+    const residence = this.bookingForm.get(choice)?.get('residence')?.value;
 
     const accommodations = this.residencies.find(
-      (r) => r.value === residency
+      (r) => r.value === residence
     )?.accommodations;
 
-    if (choice === 'firstChoiceResidence') {
+    if (choice === 'firstChoice') {
       this.firstChoiceAccomodationTypes = accommodations ?? [];
     } else {
       this.secondChoiceAccomodationTypes = accommodations ?? [];
@@ -396,49 +448,96 @@ export class CreateReservationComponent {
   }
 
   updateBuildings(choice: string) {
-    const residency = this.bookingForm.get(choice)?.value;
+    const residency = this.bookingForm.get(choice)?.get('residence')?.value;
 
     const buildings = this.residencies.find(
       (r) => r.value === residency
     )?.buildings;
 
-    if (choice === 'firstChoiceResidence') {
+    if (choice === 'firstChoice') {
       this.firstChoiceBuildings = buildings ?? [];
     } else {
       this.secondChoiceBuildings = buildings ?? [];
     }
   }
 
-  calculateFees(choice: 'first' | 'second') {}
-
   isStepValid(): boolean {
-    if (this.currentStep === 0) {
+    if (this.currentStep === 1) {
       return (
-        (this.bookingForm.get('firstChoiceResidence')?.valid ?? false) &&
-        (this.bookingForm.get('firstChoiceAccommodationType')?.valid ??
-          false) &&
-        (this.bookingForm.get('secondChoiceResidence')?.valid ?? false) &&
-        (this.bookingForm.get('secondChoiceAccommodationType')?.valid ?? false)
+        ((this.bookingForm.get('firstChoice')?.valid ?? false ?? false) &&
+          (this.bookingForm.get('secondChoice')?.valid ?? false)) ??
+        false
       );
     }
     return true;
   }
 
-  showError(fieldName: string): boolean {
-    const field = this.bookingForm.get(fieldName);
+  showError(choice: string, fieldName: string): boolean {
+    const field = this.bookingForm.get(choice)?.get(fieldName);
     return field ? field.invalid && (field.dirty || field.touched) : false;
   }
 
-  getResidenceName(value: string): string {
-    // Add logic to map residence values to display names
+  getResidenceName(choice: string): string {
+    const residence = this.bookingForm.get(choice)?.get('residence')?.value;
+    const value = this.residencies.find((r) => r.value === residence)?.display;
 
-    return value === 'external' ? 'Logement externe' : value;
+    return value ?? 'Non spécifié';
+  }
+
+  getAccommodationName(choice: string): string {
+    const accommodation = this.bookingForm
+      .get(choice)
+      ?.get('accommodation')?.value;
+
+    let value: string;
+    switch (choice) {
+      case 'firstChoice':
+        value =
+          this.secondChoiceAccomodationTypes.find(
+            (a) => a.value === accommodation
+          )?.display ?? 'Non spécifié';
+        break;
+      case 'secondChoice':
+        value =
+          this.secondChoiceAccomodationTypes.find(
+            (a) => a.value === accommodation
+          )?.display ?? 'Non spécifié';
+        break;
+      default:
+        value = 'Non spécifié';
+    }
+
+    return value;
+  }
+
+  getBuildingName(choice: string): string {
+    const building = this.bookingForm.get(choice)?.get('building')?.value;
+
+    let value: string;
+    switch (choice) {
+      case 'firstChoice':
+        value =
+          this.firstChoiceBuildings.find((a) => a.value === building)
+            ?.display ?? 'Non spécifié';
+        break;
+      case 'secondChoice':
+        value =
+          this.secondChoiceBuildings.find((a) => a.value === building)
+            ?.display ?? 'Non spécifié';
+        break;
+      default:
+        value = 'Non spécifié';
+    }
+
+    return value;
   }
 
   nextStep() {
-    if (this.currentStep < this.steps.length - 1 && this.isStepValid()) {
+    if (this.currentStep === 1) {
+      this.isValidated = this.isStepValid();
+      this.currentStep++;
+    } else if (this.currentStep < this.steps.length - 1 && this.isStepValid()) {
       console.log(this.bookingForm.value);
-
       this.currentStep++;
     }
   }
@@ -450,7 +549,7 @@ export class CreateReservationComponent {
   }
 
   printSummary() {
-    window.print();
+    this.printService.printSelection('summaryToPrint');
   }
 
   onSubmit() {

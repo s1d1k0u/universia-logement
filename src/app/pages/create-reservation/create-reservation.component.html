@@ -1,4 +1,4 @@
-<div class="min-w-full bg-white mx-auto px-4 py-8">
+<div class="min-w-full h-full bg-white mx-auto px-4 py-8">
   <div class="max-w-full md:min-w-lg md:max-w-6xl mx-auto">
     <!-- Stepper -->
     <div class="relative mb-4">
@@ -13,44 +13,44 @@
             <div
               [class]="
                 'w-10 h-10 rounded-full flex items-center justify-center font-medium ' +
-                (currentStep === i
+                (currentStep === i + 1
                   ? 'bg-purple-600 text-white'
-                  : currentStep > i
+                  : currentStep > i + 1
                   ? 'bg-green-500 text-white'
                   : 'bg-gray-200 text-gray-600')
               "
             >
-              <span *ngIf="currentStep > i" class="text-lg">✓</span>
-              <span *ngIf="currentStep <= i">{{ i + 1 }}</span>
+              <span *ngIf="currentStep > i + 1" class="text-lg">✓</span>
+              <span *ngIf="currentStep <= i + 1">{{ i + 1 }}</span>
             </div>
             <div
               class="text-sm md:text-lg mt-2 md:mt-0"
-              [class.text-green-600]="currentStep > i"
-              [class.text-gray-600]="currentStep <= i"
+              [class.text-green-600]="currentStep > i + 1"
+              [class.text-gray-600]="currentStep <= i + 1"
             >
               {{ step }}
             </div>
           </div>
-          <div
-            *ngIf="i < steps.length - 1"
-            class="hidden md:flex flex-1 w-full max-w-96 h-1 mx-4 transition-colors duration-300"
-            [ngClass]="currentStep > i ? 'bg-green-500' : 'bg-gray-200'"
-          ></div>
         </div>
       </div>
     </div>
 
-    <form [formGroup]="bookingForm" (submit)="onSubmit()" class="space-y-6">
+    <form
+      *ngIf="currentStep === 1"
+      [formGroup]="bookingForm"
+      (submit)="onSubmit()"
+      class="space-y-6"
+    >
       <!-- Step 1: Choices Selection -->
-      <div *ngIf="currentStep === 0" class="space-y-4">
+      <div class="space-y-4">
+        <!-- First Choice -->
         <div class="bg-white rounded-lg shadow p-4">
           <h2 class="text-xl font-semibold mb-6">Premier choix</h2>
 
-          <!-- First Choice -->
           <div
             class="w-full flex flex-col gap-y-4 md:gap-y-0 justify-evenly md:flex-row md:items-start md:gap-x-4"
           >
-            <div class="w-full space-y-2">
+            <div class="w-full space-y-2" formGroupName="firstChoice">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700">
                   Résidence*
@@ -61,14 +61,11 @@
                   >
                 </label>
                 <select
-                  formControlName="firstChoiceResidence"
+                  formControlName="residence"
                   (change)="
-                    updateAccomodationTypes('firstChoiceResidence');
-                    updateBuildings('firstChoiceResidence');
-                    updateTarifs(
-                      'firstChoiceResidence',
-                      'firstChoiceAccommodationType'
-                    )
+                    updateAccomodationTypes('firstChoice');
+                    updateBuildings('firstChoice');
+                    updateTarifs('firstChoice')
                   "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
@@ -81,7 +78,7 @@
                   </option>
                 </select>
                 <div
-                  *ngIf="showError('firstChoiceResidence')"
+                  *ngIf="showError('firstChoice', 'residence')"
                   class="text-red-500 text-sm mt-1"
                 >
                   Ce champ est obligatoire
@@ -93,13 +90,8 @@
                   >Type*</label
                 >
                 <select
-                  formControlName="firstChoiceAccommodationType"
-                  (change)="
-                    updateTarifs(
-                      'firstChoiceResidence',
-                      'firstChoiceAccommodationType'
-                    )
-                  "
+                  formControlName="accommodation"
+                  (change)="updateTarifs('firstChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un type</option>
@@ -111,7 +103,7 @@
                   </option>
                 </select>
                 <div
-                  *ngIf="showError('firstChoiceAccommodationType')"
+                  *ngIf="showError('firstChoice', 'accommodation')"
                   class="text-red-500 text-sm mt-1"
                 >
                   Ce champ est obligatoire
@@ -123,7 +115,7 @@
                   >Bâtiment</label
                 >
                 <select
-                  formControlName="firstChoiceBuilding"
+                  formControlName="building"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un bâtiment</option>
@@ -141,7 +133,7 @@
                   >Appartement</label
                 >
                 <select
-                  formControlName="firstChoiceApartment"
+                  formControlName="apartment"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un appartement</option>
@@ -151,56 +143,11 @@
             </div>
 
             <!-- First Choice Pricing -->
-            <div class="w-full">
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Tarifs</h3>
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-purple-600">
-                      <tr>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Facturable
-                        </th>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Montant
-                        </th>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Mode Versement
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr *ngFor="let fee of firstChoiceFees">
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.name }}
-                        </td>
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.amount }}
-                          <span class="text-[8px] align-super font-semibold"
-                            >DHS</span
-                          >
-                        </td>
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.paymentType }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <app-tarifs-table
+              *ngIf="firstChoiceFees.length > 0"
+              [fees]="firstChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
           </div>
         </div>
 
@@ -210,7 +157,7 @@
           <div
             class="w-full flex flex-col gap-y-4 md:gap-y-0 justify-between md:flex-row md:items-start md:gap-x-4"
           >
-            <div class="w-full space-y-2">
+            <div class="w-full space-y-2" formGroupName="secondChoice">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700">
                   Résidence*
@@ -221,14 +168,11 @@
                   >
                 </label>
                 <select
-                  formControlName="secondChoiceResidence"
+                  formControlName="residence"
                   (change)="
-                    updateAccomodationTypes('secondChoiceResidence');
-                    updateBuildings('secondChoiceResidence');
-                    updateTarifs(
-                      'secondChoiceResidence',
-                      'secondChoiceAccommodationType'
-                    )
+                    updateAccomodationTypes('secondChoice');
+                    updateBuildings('secondChoice');
+                    updateTarifs('secondChoice')
                   "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
@@ -241,7 +185,7 @@
                   </option>
                 </select>
                 <div
-                  *ngIf="showError('secondChoiceResidence')"
+                  *ngIf="showError('secondChoice', 'residence')"
                   class="text-red-500 text-sm mt-1"
                 >
                   Ce champ est obligatoire
@@ -253,13 +197,8 @@
                   >Type*</label
                 >
                 <select
-                  formControlName="secondChoiceAccommodationType"
-                  (change)="
-                    updateTarifs(
-                      'secondChoiceResidence',
-                      'secondChoiceAccommodationType'
-                    )
-                  "
+                  formControlName="accommodation"
+                  (change)="updateTarifs('secondChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un type</option>
@@ -277,7 +216,7 @@
                   >Bâtiment</label
                 >
                 <select
-                  formControlName="secondChoiceBuilding"
+                  formControlName="building"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un bâtiment</option>
@@ -295,7 +234,7 @@
                   >Appartement</label
                 >
                 <select
-                  formControlName="secondChoiceApartment"
+                  formControlName="apartment"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un appartement</option>
@@ -304,174 +243,113 @@
               </div>
             </div>
             <!-- Second Choice Pricing -->
-            <div class="w-full">
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Tarifs</h3>
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-purple-600">
-                      <tr>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Facturable
-                        </th>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Montant
-                        </th>
-                        <th
-                          class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                        >
-                          Mode Versement
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr *ngFor="let fee of secondChoiceFees">
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.name }}
-                        </td>
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.amount }} €
-                        </td>
-                        <td
-                          class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                        >
-                          {{ fee.paymentType }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <app-tarifs-table
+              *ngIf="secondChoiceFees.length > 0"
+              [fees]="secondChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
           </div>
         </div>
       </div>
+      <!-- Navigation Buttons -->
+      <div class="flex justify-end space-x-4">
+        <button
+          type="button"
+          (click)="nextStep()"
+          [disabled]="!bookingForm.valid"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Suivant
+        </button>
+      </div>
+    </form>
 
-      <!-- Step 2: Validation -->
-      <div *ngIf="currentStep === 1" class="bg-white rounded-lg shadow p-6">
+    <!-- Step 2: Validation -->
+    <div *ngIf="currentStep === 2">
+      <div class="bg-white rounded-lg shadow p-4">
         <h2 class="text-xl font-semibold mb-6">Validation de vos choix</h2>
 
-        <div class="space-y-6">
+        <div class="space-y-4">
           <!-- First Choice Summary -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">
-              Premier choix
-            </h3>
-            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Résidence</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    getResidenceName(
-                      bookingForm.get("firstChoiceResidence")?.value
-                    )
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">
-                  Type d'aménagement
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{ bookingForm.get("firstChoiceAccommodationType")?.value }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Bâtiment</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{ bookingForm.get("firstChoiceBuilding")?.value }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Appartement</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    bookingForm.get("firstChoiceApartment")?.value ||
-                      "Non spécifié"
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Chambre</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    bookingForm.get("firstChoiceApartment")?.value ||
-                      "Non spécifié"
-                  }}
-                </dd>
-              </div>
-            </dl>
+          <div class="flex flex-col md:flex-row gap-4 p-4">
+            <app-choice-summary
+              [data]="{
+                  header: 'Votre Premier Choix',
+                  residence: getResidenceName('firstChoice'),
+                  accomodation: getAccommodationName('firstChoice'),
+                  building: getBuildingName('firstChoice'),
+                  apartment:
+                    bookingForm.get('firstChoice')?.get('apartment')?.value ??
+                    'Non spécifié',
+                }"
+            ></app-choice-summary>
+            <app-tarifs-table
+              [fees]="firstChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
           </div>
 
           <!-- Second Choice Summary -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">
-              Deuxième choix
-            </h3>
-            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Résidence</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    getResidenceName(
-                      bookingForm.get("firstChoiceResidence")?.value
-                    )
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">
-                  Type d'aménagement
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{ bookingForm.get("firstChoiceAccommodationType")?.value }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Bâtiment</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{ bookingForm.get("firstChoiceBuilding")?.value }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Appartement</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    bookingForm.get("firstChoiceApartment")?.value ||
-                      "Non spécifié"
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm font-medium text-gray-500">Chambre</dt>
-                <dd class="mt-1 text-sm text-gray-900">
-                  {{
-                    bookingForm.get("firstChoiceApartment")?.value ||
-                      "Non spécifié"
-                  }}
-                </dd>
-              </div>
-            </dl>
+          <div class="flex flex-col md:flex-row gap-4 p-4">
+            <app-choice-summary
+              [data]="{
+                  header: 'Votre Deuxième Choix',
+                  residence: getResidenceName('secondChoice'),
+                  accomodation: getAccommodationName('secondChoice'),
+                  building: getBuildingName('secondChoice'),
+                  apartment:
+                    bookingForm.get('secondChoice')?.get('apartment')?.value ??
+                    'Non spécifié',
+                }"
+            ></app-choice-summary>
+            <app-tarifs-table
+              [fees]="secondChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
           </div>
         </div>
       </div>
+      <div class="flex justify-end space-x-4 p-4">
+        <button
+          (click)="previousStep()"
+          class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+        >
+          Précédent
+        </button>
+        <button
+          (click)="nextStep()"
+          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Valider
+        </button>
+      </div>
+    </div>
 
-      <!-- Step 3: Final Summary -->
-      <div *ngIf="currentStep === 2" class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-semibold">Résumé de votre réservation</h2>
+    <!-- Display And Print Summary -->
+    <div *ngIf="currentStep === 3" class="bg-white rounded-lg shadow p-4">
+      <!--Confirmation Message-->
+      <div
+        class="my-8 rounded-lg bg-green-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
+      >
+        <div class="flex items-center gap-x-2">
+          <span class="text-lg">✓</span>
+          <h1>
+            Votre réservation a bien été réçu. En attente du traîtement de votre
+            demande
+          </h1>
+        </div>
+      </div>
+      <div class="flex gap-x-4 items-center mb-6">
+        <h2 class="text-xl font-semibold" *ngIf="showDetails">
+          Résumé de vos choix
+        </h2>
+        <div class="flex-1 flex items-center justify-end gap-x-4">
+          <button (click)="showDetails = !showDetails" class="text-purple-600">
+            <i-lucide [img]="showDetails ? eyeOff : eye"></i-lucide>
+          </button>
           <button
-            type="button"
             (click)="printSummary()"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            class="inline-flex md:order-3 items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
           >
             <svg
               class="h-5 w-5 mr-2"
@@ -489,33 +367,78 @@
             Imprimer
           </button>
         </div>
+      </div>
 
-        <!-- Detailed Summary Content -->
-        <div class="space-y-6" id="printable-summary">
-          <!-- Add complete summary with all details -->
+      <div class="space-y-4" *ngIf="showDetails" id="summaryToPrint">
+        <!-- First Choice Summary -->
+        <div class="flex flex-col md:flex-row gap-4 p-4">
+          <app-choice-summary
+            [data]="{
+                  header: 'Votre Premier Choix',
+                  residence: getResidenceName('firstChoice'),
+                  accomodation: getAccommodationName('firstChoice'),
+                  building: getBuildingName('firstChoice'),
+                  apartment:
+                    bookingForm.get('firstChoice')?.get('apartment')?.value ??
+                    'Non spécifié',
+                }"
+          ></app-choice-summary>
+          <app-tarifs-table
+            [fees]="firstChoiceFees"
+            header="Tarifs"
+          ></app-tarifs-table>
+        </div>
+
+        <!-- Second Choice Summary -->
+        <div class="flex flex-col md:flex-row gap-4 p-4">
+          <app-choice-summary
+            [data]="{
+                  header: 'Votre Deuxième Choix',
+                  residence: getResidenceName('secondChoice'),
+                  accomodation: getAccommodationName('secondChoice'),
+                  building: getBuildingName('secondChoice'),
+                  apartment:
+                    bookingForm.get('secondChoice')?.get('apartment')?.value ??
+                    'Non spécifié',
+                }"
+          ></app-choice-summary>
+          <app-tarifs-table
+            [fees]="secondChoiceFees"
+            header="Tarifs"
+          ></app-tarifs-table>
         </div>
       </div>
+    </div>
 
-      <!-- Navigation Buttons -->
-      <div class="flex justify-end space-x-4">
+    <!-- Step 3: Final Summary -->
+    <!-- <div *ngIf="currentStep === 2" class="bg-white rounded-lg shadow p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold">Résumé de votre réservation</h2>
         <button
-          *ngIf="currentStep > 0"
           type="button"
-          (click)="previousStep()"
-          class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+          (click)="printSummary()"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
         >
-          Précédent
-        </button>
-        <button
-          *ngIf="currentStep < steps.length - 1"
-          type="button"
-          (click)="nextStep()"
-          [disabled]="!isStepValid()"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {{ currentStep === 1 ? "Valider" : "Suivant" }}
+          <svg
+            class="h-5 w-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+            />
+          </svg>
+          Imprimer
         </button>
       </div>
-    </form>
+
+      <div class="space-y-6" id="printable-summary">
+        
+      </div>
+    </div> -->
   </div>
 </div>
