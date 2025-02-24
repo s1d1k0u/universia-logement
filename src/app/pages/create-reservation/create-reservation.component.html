@@ -35,12 +35,7 @@
       </div>
     </div>
 
-    <form
-      *ngIf="currentStep === 1"
-      [formGroup]="bookingForm"
-      (submit)="onSubmit()"
-      class="space-y-6"
-    >
+    <form *ngIf="currentStep === 1" [formGroup]="bookingForm" class="space-y-6">
       <!-- Step 1: Choices Selection -->
       <div class="space-y-4">
         <!-- First Choice -->
@@ -137,6 +132,19 @@
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un appartement</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Chambre</label
+                >
+                <select
+                  formControlName="room"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une chambre</option>
                   <option value="3">3</option>
                 </select>
               </div>
@@ -241,6 +249,19 @@
                   <option value="3">3</option>
                 </select>
               </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Chambre</label
+                >
+                <select
+                  formControlName="room"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une chambre</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
             </div>
             <!-- Second Choice Pricing -->
             <app-tarifs-table
@@ -249,6 +270,28 @@
               header="Tarifs"
             ></app-tarifs-table>
           </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="space-y-2">
+          <label for="remarks" class="block text-sm font-medium text-gray-700">
+            Remarques
+            <span
+              class="ml-1 text-gray-400 hover:text-gray-600 cursor-help"
+              title="Ajoutez des informations complémentaires à votre demande"
+              >ⓘ</span
+            >
+          </label>
+          <textarea
+            id="remarks"
+            formControlName="remarks"
+            rows="4"
+            placeholder="Ajoutez ici vos remarques ou informations complémentaires..."
+            class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 placeholder:text-gray-400 text-sm resize-y min-h-[6rem]"
+          ></textarea>
+          <p class="mt-1 text-sm text-gray-500">
+            Facultatif - Maximum 500 caractères
+          </p>
         </div>
       </div>
       <!-- Navigation Buttons -->
@@ -281,6 +324,9 @@
                   apartment:
                     bookingForm.get('firstChoice')?.get('apartment')?.value ??
                     'Non spécifié',
+                  room:
+                    bookingForm.get('firstChoice')?.get('room')?.value ??
+                    'Non spécifié',
                 }"
             ></app-choice-summary>
             <app-tarifs-table
@@ -299,6 +345,9 @@
                   building: getBuildingName('secondChoice'),
                   apartment:
                     bookingForm.get('secondChoice')?.get('apartment')?.value ??
+                    'Non spécifié',
+                  room:
+                    bookingForm.get('secondChoice')?.get('room')?.value ??
                     'Non spécifié',
                 }"
             ></app-choice-summary>
@@ -327,118 +376,221 @@
 
     <!-- Display And Print Summary -->
     <div *ngIf="currentStep === 3" class="bg-white rounded-lg shadow p-4">
-      <!--Confirmation Message-->
-      <div
-        class="my-8 rounded-lg bg-green-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
-      >
-        <div class="flex items-center gap-x-2">
-          <span class="text-lg">✓</span>
-          <h1>
-            Votre réservation a bien été réçu. En attente du traîtement de votre
-            demande
-          </h1>
-        </div>
-      </div>
-      <div class="flex gap-x-4 items-center mb-6">
-        <h2 class="text-xl font-semibold" *ngIf="showDetails">
-          Résumé de vos choix
-        </h2>
-        <div class="flex-1 flex items-center justify-end gap-x-4">
-          <button (click)="showDetails = !showDetails" class="text-purple-600">
-            <i-lucide [img]="showDetails ? eyeOff : eye"></i-lucide>
-          </button>
-          <button
-            (click)="printSummary()"
-            class="inline-flex md:order-3 items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+      <div [ngSwitch]="booking?.status">
+        <div *ngSwitchCase="'PENDING'">
+          <!--Confirmation Message-->
+          <div
+            class="my-8 rounded-lg bg-green-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
           >
-            <svg
-              class="h-5 w-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+            <div class="flex items-center gap-x-2">
+              <span class="text-lg">✓</span>
+              <h1>
+                Votre réservation a bien été réçu. En attente du traîtement de
+                votre demande
+              </h1>
+            </div>
+          </div>
+          <div class="flex gap-x-4 items-center mb-6">
+            <h2 class="text-xl font-semibold" *ngIf="showDetails">
+              Résumé de vos choix
+            </h2>
+            <div class="flex-1 flex items-center justify-end gap-x-4">
+              <button
+                (click)="showDetails = !showDetails"
+                class="text-purple-600"
+              >
+                <i-lucide [img]="showDetails ? eyeOff : eye"></i-lucide>
+              </button>
+              <button
+                (click)="printSummary()"
+                class="inline-flex md:order-3 items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
+                <svg
+                  class="h-5 w-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                  />
+                </svg>
+                Imprimer
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-4" *ngIf="showDetails" id="summaryToPrint">
+            <!-- First Choice Summary -->
+            <div class="flex flex-col md:flex-row gap-4 p-4">
+              <app-choice-summary
+                [data]="{
+                header: 'Votre Premier Choix',
+                residence: getResidenceName('firstChoice'),
+                accomodation: getAccommodationName('firstChoice'),
+                building: getBuildingName('firstChoice'),
+                apartment:
+                  bookingForm.get('firstChoice')?.get('apartment')?.value ??
+                  'Non spécifié',
+                room:
+                    bookingForm.get('firstChoice')?.get('room')?.value ??
+                    'Non spécifié',
+              }"
+              ></app-choice-summary>
+              <app-tarifs-table
+                [fees]="firstChoiceFees"
+                header="Tarifs"
+              ></app-tarifs-table>
+            </div>
+
+            <!-- Second Choice Summary -->
+            <div class="flex flex-col md:flex-row gap-4 p-4">
+              <app-choice-summary
+                [data]="{
+                header: 'Votre Deuxième Choix',
+                residence: getResidenceName('secondChoice'),
+                accomodation: getAccommodationName('secondChoice'),
+                building: getBuildingName('secondChoice'),
+                apartment:
+                  bookingForm.get('secondChoice')?.get('apartment')?.value ??
+                  'Non spécifié',
+                room:
+                    bookingForm.get('secondChoice')?.get('room')?.value ??
+                    'Non spécifié',
+              }"
+              ></app-choice-summary>
+              <app-tarifs-table
+                [fees]="secondChoiceFees"
+                header="Tarifs"
+              ></app-tarifs-table>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'REJECTED'" class="space-y-4">
+          <div
+            class="my-8 rounded-lg flex gap-x-3 items-center bg-red-500/65 text-white border px-4 py-2"
+          >
+            <span class="text-lg font-bold">✗</span>
+            <h1 class="text-lg font-medium">Votre réservation a été rejetée</h1>
+          </div>
+          <div class="space-y-2">
+            <p class="font-medium text-gray-700 text-lg">Motif du rejet:</p>
+            <p class="text-gray-600 bg-gray-50 p-4 rounded-md">
+              {{ rejectionReason }}
+            </p>
+          </div>
+        </div>
+        <div *ngSwitchCase="'ACCEPTED'" class="space-y-4">
+          <!-- Success Message -->
+          <div class="p-4 bg-green-100 rounded-lg">
+            <h2 class="text-xl font-semibold text-green-800 mb-2">
+              Félicitations ! Votre réservation a été acceptée
+            </h2>
+            <p class="text-green-700">
+              Veuillez prendre connaissance du règlement intérieur avant de
+              procéder au paiement.
+            </p>
+          </div>
+
+          <!-- Booking Summary-->
+          <div class="">
+            <h3 class="text-lg font-semibold mb-4">
+              Récapitulatif de votre réservation
+            </h3>
+            <app-choice-summary
+              [data]="{
+                header: 'Votre Choix',
+                residence: booking!.firstChoice.residence,
+                accomodation: booking!.firstChoice.accommodation,
+                building: booking!.firstChoice.building,
+                apartment: booking!.firstChoice.apartment
+              }"
+            ></app-choice-summary>
+          </div>
+
+          <!-- Rules -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4">Règlement intérieur</h3>
+            <div class="prose prose-sm max-w-none">
+              <div
+                class="h-64 overflow-y-auto bg-white p-4 rounded border"
+              ></div>
+            </div>
+          </div>
+
+          <!--Rules Acceptance-->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-x-2">
+              <input
+                type="checkbox"
+                id="rulesAcceptance"
+                class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
               />
-            </svg>
-            Imprimer
-          </button>
+              <label for="rulesAcceptance" class="text-sm text-gray-700">
+                J'ai lu et j'accepte le règlement intérieur
+              </label>
+            </div>
+            <button
+              [disabled]="!rulesAccepted"
+              class="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Procéder au paiement
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div class="space-y-4" *ngIf="showDetails" id="summaryToPrint">
-        <!-- First Choice Summary -->
-        <div class="flex flex-col md:flex-row gap-4 p-4">
-          <app-choice-summary
-            [data]="{
-                  header: 'Votre Premier Choix',
-                  residence: getResidenceName('firstChoice'),
-                  accomodation: getAccommodationName('firstChoice'),
-                  building: getBuildingName('firstChoice'),
-                  apartment:
-                    bookingForm.get('firstChoice')?.get('apartment')?.value ??
-                    'Non spécifié',
-                }"
-          ></app-choice-summary>
-          <app-tarifs-table
-            [fees]="firstChoiceFees"
-            header="Tarifs"
-          ></app-tarifs-table>
-        </div>
-
-        <!-- Second Choice Summary -->
-        <div class="flex flex-col md:flex-row gap-4 p-4">
-          <app-choice-summary
-            [data]="{
-                  header: 'Votre Deuxième Choix',
-                  residence: getResidenceName('secondChoice'),
-                  accomodation: getAccommodationName('secondChoice'),
-                  building: getBuildingName('secondChoice'),
-                  apartment:
-                    bookingForm.get('secondChoice')?.get('apartment')?.value ??
-                    'Non spécifié',
-                }"
-          ></app-choice-summary>
-          <app-tarifs-table
-            [fees]="secondChoiceFees"
-            header="Tarifs"
-          ></app-tarifs-table>
+        <div *ngSwitchCase="'ALTERNATIVE_OFFERED'">
+          <div
+            class="my-8 rounded-lg bg-yellow-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
+          >
+            <div class="flex items-center gap-x-2">
+              <span class="text-lg">!</span>
+              <h1>
+                Votre réservation a été acceptée avec des modifications.
+                Veuillez trouver les details ci-dessous.
+              </h1>
+            </div>
+          </div>
+          <!-- Booking Summary-->
+          <div class="">
+            <h3 class="text-lg font-semibold mb-4">Le choix alternatif</h3>
+            <app-choice-summary
+              [data]="{
+                header: 'Votre Choix',
+                residence: getResidenceName('firstChoice'),
+                accomodation: getAccommodationName('firstChoice'),
+                building: getBuildingName('firstChoice'),
+                apartment:
+                  bookingForm.get('firstChoice')?.get('apartment')?.value ??
+                  'Non spécifié',
+                room:
+                  bookingForm.get('firstChoice')?.get('room')?.value ?? 
+                  'Non spécifié',
+              }"
+            ></app-choice-summary>
+            <div class="mt-8 space-y-6">
+              <div
+                class="flex flex-col md:flex-row gap-4 md:gap-x-4 md:justify-end"
+              >
+                <button
+                  (click)="rejectAlternative()"
+                  class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700"
+                >
+                  Refuser et modifier mes choix
+                </button>
+                <button
+                  (click)="acceptAlternative()"
+                  class="w-full md:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                >
+                  Accepter cette proposition
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Step 3: Final Summary -->
-    <!-- <div *ngIf="currentStep === 2" class="bg-white rounded-lg shadow p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-semibold">Résumé de votre réservation</h2>
-        <button
-          type="button"
-          (click)="printSummary()"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-        >
-          <svg
-            class="h-5 w-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-            />
-          </svg>
-          Imprimer
-        </button>
-      </div>
-
-      <div class="space-y-6" id="printable-summary">
-        
-      </div>
-    </div> -->
   </div>
 </div>
