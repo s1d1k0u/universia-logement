@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="w-full flex justify-between items-center py-4">
+        <!-- Reservation Code -->
+        <div class="flex items-center space-x-2">
+          <span class="text-sm text-gray-500"
+            ><span class="hidden md:inline-block">Reservation</span> Code:</span
+          >
+          <span
+            class="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-medium"
+          >
+            #RSV-2024-001
+          </span>
+        </div>
+
+        <!-- Welcome Box & Menu -->
+        <div
+          [class]="
+            isMenuOpen
+              ? 'relative ring-2 ring-indigo-500 ring-opacity-50'
+              : 'relative'
+          "
+        >
+          <button
+            (click)="isMenuOpen = !isMenuOpen"
+            class="flex items-center space-x-1 px-4 py-2 rounded-lg hover:bg-gray-50"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span class="text-gray-700 hidden md:inline-block"
+              >Welcome, User</span
+            >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+            *ngIf="isMenuOpen"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1"
+          >
+            <button
+              (click)="logout()"
+              class="flex items-center md:cursor-pointer w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <router-outlet></router-outlet>
+</div>
