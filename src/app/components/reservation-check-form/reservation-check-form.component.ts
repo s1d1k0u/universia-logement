@@ -71,7 +71,6 @@ export class ReservationCheckFormComponent {
       } finally {
         this.loading = false;
       }
-      console.log('Form submitted');
     }
   }
 
