@@ -3,8 +3,23 @@
   (submit)="onSubmit()"
   class="max-w-xl mx-auto backdrop-blur-sm bg-white/10 p-6 rounded-2xl shadow-lg"
 >
+  <div
+    *ngIf="errorMessage"
+    class="mb-6 text-white text-sm font-medium rounded-lg bg-red-400/65 p-4"
+  >
+    <p>
+      {{ errorMessage }}
+    </p>
+  </div>
+  <div
+    *ngIf="infoMessage"
+    class="mb-6 text-white text-sm font-medium rounded-lg bg-orange-400/35 p-4"
+  >
+    <p>
+      {{ infoMessage }}
+    </p>
+  </div>
   <div class="flex flex-col gap-3 h-40 md:h-24">
-    <!-- Input and button row -->
     <div class="flex flex-col sm:flex-row gap-3">
       <div class="flex-1">
         <input
@@ -13,7 +28,7 @@
           name="reservationCode"
           formControlName="reservationCode"
           placeholder="Entrez votre code de réservation"
-          class="w-full px-4 py-3 rounded-xl border-2 border-transparent bg-white/90 text-gray-800 placeholder-gray-500 font-medium transition-all duration-200 focus:outline-none focus:border-violet-500 focus:bg-white"
+          class="w-full px-4 py-3 rounded-lg border-2 border-transparent bg-white/90 text-gray-800 placeholder-gray-500 font-medium transition-all duration-200 focus:outline-none focus:border-violet-500 focus:bg-white"
         />
       </div>
       <div>
@@ -24,19 +39,23 @@
           class="text-red-500 md:hidden text-sm font-semibold text-left"
         >
           <span *ngIf="reservationCodeControl?.errors?.['required']"
-            >* Reservation code is required.</span
+            >* Le code de la réservation est requis.</span
           >
           <span *ngIf="reservationCodeControl?.errors?.['pattern']"
-            >* Code must be alphanumeric (A-Z, a-z, 0-9).</span
+            >* Veuillez entre le bon code.</span
           >
         </p>
       </div>
       <button
         type="submit"
-        class="w-full sm:w-auto bg-violet-600 disabled:bg-violet-200 disabled:text-slate-600 disabled:md:cursor-not-allowed md:cursor-pointer text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:bg-violet-700 hover:shadow-lg active:transform active:scale-95"
-        [disabled]="reservationCodeControl?.invalid"
+        class="w-full sm:w-auto bg-violet-600 disabled:bg-violet-200 disabled:text-slate-600 disabled:md:cursor-not-allowed md:cursor-pointer text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:bg-violet-700 hover:shadow-lg active:transform active:scale-95 flex items-center justify-center gap-2"
+        [disabled]="reservationCodeControl?.invalid || loading"
       >
-        Consultez
+        <span
+          *ngIf="loading"
+          class="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"
+        ></span>
+        <span *ngIf="!loading">Consultez</span>
       </button>
     </div>
 
@@ -49,10 +68,10 @@
         class="hidden md:block text-red-500 text-sm font-semibold text-left"
       >
         <span *ngIf="reservationCodeControl?.errors?.['required']"
-          >* Reservation code is required.</span
+          >* Le code de la réservation est requis.</span
         >
         <span *ngIf="reservationCodeControl?.errors?.['pattern']"
-          >* Code must be alphanumeric (A-Z, a-z, 0-9).</span
+          >* Veuillez entre le bon code.</span
         >
       </p>
     </div>

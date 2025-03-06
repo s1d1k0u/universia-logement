@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ArrowRight, LucideAngularModule } from 'lucide-angular';
+import { ReservationService } from '../../services/reservation.service';
 
 @Component({
   selector: 'app-reservation-check-form',
@@ -16,6 +17,13 @@ import { ArrowRight, LucideAngularModule } from 'lucide-angular';
   styleUrl: './reservation-check-form.component.css',
 })
 export class ReservationCheckFormComponent {
+  reservationService: ReservationService = inject(ReservationService);
+  router: Router = inject(Router);
+
+  errorMessage = '';
+  infoMessage = '';
+  loading = false;
+
   reservationForm: FormGroup = new FormGroup({
     reservationCode: new FormControl('', [
       Validators.required,
@@ -30,7 +38,35 @@ export class ReservationCheckFormComponent {
 
   onSubmit() {
     if (this.reservationForm.valid) {
-      alert('Vérification de votre réservation...');
+      this.loading = true;
+      try {
+        this.reservationService
+          .getReservationByCode(this.reservationCodeControl?.value)
+          .subscribe({
+            next: (reservations) => {
+              if (reservations.length === 0) {
+                this.infoMessage =
+                  'Aucune réservation trouvée avec ce code. Veuillez vérifier le code.';
+                this.loading = false;
+                return;
+              }
+              this.reservationService.setReservation(reservations[0]);
+              this.router.navigate([
+                '/reservation-list',
+                reservations[0].RSV_CODE,
+              ]);
+            },
+            error: (error) => {
+              error.status === 500
+                ? (this.errorMessage = 'Une erreur est survenue')
+                : (this.errorMessage = 'Aucune réservation trouvée');
+            },
+          });
+      } catch (error) {
+        this.errorMessage = 'Une erreur est survenue';
+      } finally {
+        this.loading = false;
+      }
       console.log('Form submitted');
     }
   }
