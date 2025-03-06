@@ -51,6 +51,10 @@ export class ReservationCheckFormComponent {
                 return;
               }
               this.reservationService.setReservation(reservations[0]);
+              localStorage.setItem(
+                'reservation',
+                JSON.stringify(this.reservationService.reservation)
+              );
               this.router.navigate([
                 '/reservation-list',
                 reservations[0].RSV_CODE,
