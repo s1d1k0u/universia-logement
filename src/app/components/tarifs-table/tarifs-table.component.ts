@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { NewFee } from '../../services/reservation.service';
 
 @Component({
   selector: 'app-tarifs-table',
@@ -8,6 +9,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './tarifs-table.component.css',
 })
 export class TarifsTableComponent {
-  @Input() fees: any[] = [];
+  @Input() fees: NewFee[] = [];
   @Input() header: string = '';
 }

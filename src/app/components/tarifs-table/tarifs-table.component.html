@@ -1,4 +1,7 @@
-<div class="flex-1 p-4 bg-gray-100 rounded-lg shadow md:h-full">
+<div
+  *ngIf="fees.length > 0"
+  class="flex-1 p-4 bg-gray-100 rounded-lg shadow md:h-full"
+>
   <h3 class="text-lg font-medium text-gray-900 mb-4">{{ header }}</h3>
   <div class="overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
@@ -22,18 +25,15 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr
-          *ngFor="let fee of fees"
-          class="hover:bg-gray-100 transition-colors"
-        >
+        <tr *ngFor="let fee of fees" class="hover:bg-gray-50 transition-colors">
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ fee.name }}
+            {{ fee.Fact_Nom }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ fee.amount }} €
+            {{ fee.TAR_Montant }} DHS
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            {{ fee.paymentType }}
+            {{ fee.VersRec_Nom }}
           </td>
         </tr>
       </tbody>

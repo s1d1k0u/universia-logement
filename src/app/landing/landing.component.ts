@@ -21,6 +21,27 @@ interface AccommodationType {
   description: string;
 }
 
+export const RESIDENCIES = [
+  {
+    src: '/assets/images/logementExt.jpg',
+    title: 'Logement externe',
+    description:
+      'A dix minutes de marche du campus Universiapolis, le logement externe vous offre des appartements et studios meublé avec plusieurs configurations afin de garantir un confort et qualité de vie. Les étudiants ont le choix entre des studios individuelles et des appartements partagés a 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…).',
+  },
+  {
+    src: '/assets/images/residencet.jpg',
+    title: 'Résidence Intégrée Universiapolis',
+    description:
+      'Conçue selon les standards des résidences universitaires modernes, la résidence d’Universiapolis propose aux étudiants résidents plusieurs possibilités de logements (studios individuels ou appartements partagés), des espaces de vie et de convivialité, des espaces de travail, des commerces de proximité… C’est une résidence intégrée qui garantit qualité de vie, proximité et sécurité. La résidence offre des studios et appartements indépendants avec différentes configurations. Les étudiants ont le choix entre des studios individuels et des appartements partagés à 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…).',
+  },
+  {
+    src: '/assets/images/alKarama.png',
+    title: 'Résidence annexe AL Karama',
+    description:
+      'Une Résidence hors campus qui comprend des studios individuels et des appartements individuels et partagés meublés et équipés avec les commodités nécessaires à leurs conforts. Cette résidence dispose d’une salle de lecture, une salle de détente avec télévision. sécurité et gardiennage … La résidence offre des studios et appartements indépendants avec différentes configurations. Les étudiants ont le choix entre des studios individuels et des appartements partagés à 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…). Chaque appartement dispose d’une cuisine équipée d’un réfrigérateur, cuisinière et salle à manger. Ceci permet aux étudiants résidants une meilleure autonomie dans la gestion de leurs repas quotidiens. Les accès à la Résidence sont sous vidéo-surveillance 24h/24. L’entrée de la résidence est également surveillée par des agents de sécurité. L’accès à la Résidence est réservé aux étudiants de l’Université et l’accès aux invités est régi par un règlement interne spécifique. ',
+  },
+];
+
 @Component({
   selector: 'app-landing',
   imports: [LucideAngularModule, CommonModule, ReservationCheckFormComponent],
@@ -98,27 +119,9 @@ export class LandingComponent {
       imageUrl: '/assets/images/agence.jpg',
     },
   ];
+  RESIDENCIES = RESIDENCIES;
 
-  RESIDENCIES = [
-    {
-      src: '/assets/images/logementExt.jpg',
-      title: 'Logement externe',
-      description:
-        'A dix minutes de marche du campus Universiapolis, le logement externe vous offre des appartements et studios meublé avec plusieurs configurations afin de garantir un confort et qualité de vie. Les étudiants ont le choix entre des studios individuelles et des appartements partagés a 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…).',
-    },
-    {
-      src: '/assets/images/residencet.jpg',
-      title: 'Résidence Intégrée Universiapolis',
-      description:
-        'Conçue selon les standards des résidences universitaires modernes, la résidence d’Universiapolis propose aux étudiants résidents plusieurs possibilités de logements (studios individuels ou appartements partagés), des espaces de vie et de convivialité, des espaces de travail, des commerces de proximité… C’est une résidence intégrée qui garantit qualité de vie, proximité et sécurité. La résidence offre des studios et appartements indépendants avec différentes configurations. Les étudiants ont le choix entre des studios individuels et des appartements partagés à 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…).',
-    },
-    {
-      src: '/assets/images/alKarama.png',
-      title: 'Résidence annexe AL Karama',
-      description:
-        'Une Résidence hors campus qui comprend des studios individuels et des appartements individuels et partagés meublés et équipés avec les commodités nécessaires à leurs conforts. Cette résidence dispose d’une salle de lecture, une salle de détente avec télévision. sécurité et gardiennage … La résidence offre des studios et appartements indépendants avec différentes configurations. Les étudiants ont le choix entre des studios individuels et des appartements partagés à 2 ou à 3 colocataires. Tous les studios et appartements sont meublés et équipés (lit, armoire, bureau, chauffage solaire des eaux…). Les étudiants peuvent aussi accéder (sur commande) à d’autres équipements (grand lit, télévision…). Chaque appartement dispose d’une cuisine équipée d’un réfrigérateur, cuisinière et salle à manger. Ceci permet aux étudiants résidants une meilleure autonomie dans la gestion de leurs repas quotidiens. Les accès à la Résidence sont sous vidéo-surveillance 24h/24. L’entrée de la résidence est également surveillée par des agents de sécurité. L’accès à la Résidence est réservé aux étudiants de l’Université et l’accès aux invités est régi par un règlement interne spécifique. ',
-    },
-  ];
+  
 
   constructor() {
     this.selectedType = this.accommodationTypes[0]; // Initialize with V.I.P

@@ -27,6 +27,7 @@ export class ReservationListComponent {
   ngOnInit() {
     if (this.reservationService.reservation) {
       this.reservation = this.reservationService.reservation;
+      console.log('No reservation found in service');
     } else {
       const reservation = localStorage.getItem('reservation');
       if (reservation) {
@@ -40,9 +41,10 @@ export class ReservationListComponent {
   onCancel() {
     if (!this.reservation) return;
     this.reservationService.cancelReservation(this.reservation).subscribe({
-      next: (success) => {
-        this.router.navigate(['/']);
+      next: () => {
         this.infoMessage = 'Réservation annulée avec succès';
+        localStorage.removeItem('reservation');
+        this.router.navigate(['/']);
       },
       error: (error) => {
         this.errorMessage = "Erreur lors de l'annulation de la réservation";
@@ -51,6 +53,6 @@ export class ReservationListComponent {
   }
 
   onContinue() {
-    this.router.navigate(['/reservation']);
+    this.router.navigate(['/reservation', this.reservation?.RSV_CODE]);
   }
 }

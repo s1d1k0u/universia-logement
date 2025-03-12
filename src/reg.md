@@ -174,3 +174,343 @@ Le nonrespect des présentes règles par le résident peut entraîner des sancti
     Exclusion des cours et examens ;
 
 Les parents du résident sanctionné sont informés chaque fois qu’une sanction lui sera infligée.
+
+/\*\*
+
+- This component is a 4 step form
+- On the first step the user should choose
+- the residence, the type of accomodation and the building
+- for the first and second choice
+- On the second step the user should validate the choices
+- made on the first step
+- and if the choices are validated,
+- the page should display a confirmation message
+- and 2 buttons one to print the summary and the
+- other to go show/hide the details of the choices made
+-
+- But on first page load, we should check if the user already has a booking
+- if he has one, we should display the booking details
+- and depending on the status of the booking, we should display the page
+- accordingly, if the booking is pending, we should display the step 3,
+- if the booking is accepted, we should display the booking details and the rules of the residence
+- that the user should accept before confirming the booking and move to the step 4 payment
+- if the booking is rejected, we should display a message saying that the booking is rejected
+- and display the reason of the rejection
+- if the booking is rejected and an alternative is offered, we should display the alternative
+- and display a message saying that the booking is rejected and an alternative is offered
+- and the user should accept the alternative before moving to the step 4 payment
+- or he can choose another residence and type of accomodation, so make a new choice, so the step 1
+- if the user makes a new choice, we should display the step 2 and the user should validate the choices
+- and if the choices are validated, we should display the step 3
+- if the booking is pending, we should display the step 3
+  \*/
+
+<form
+      *ngIf="currentStep === 1"
+      [formGroup]="reservationForm"
+      class="space-y-6"
+    >
+      <!-- Step 1: Choices Selection -->
+      <div class="space-y-4">
+        <!-- First Choice -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <h2 class="text-xl font-semibold mb-6">Premier choix</h2>
+
+          <div
+            class="w-full flex flex-col gap-y-4 md:gap-y-0 justify-evenly md:flex-row md:items-start md:gap-x-4"
+          >
+            <div class="w-full space-y-2" formGroupName="firstChoice">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">
+                  Résidence*
+                  <span
+                    class="ml-1 text-gray-400 hover:text-gray-600 cursor-help"
+                    title="Sélectionnez votre résidence préférée"
+                    >ⓘ</span
+                  >
+                </label>
+                <select
+                  formControlName="residence"
+                  (change)="
+                    updateAccomodationTypes('firstChoice');
+                    updateBuildings('firstChoice')
+                  "
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une résidence</option>
+                  <option
+                    *ngFor="let res of residencies; let idx = index"
+                    [value]="res.RES_Id"
+                  >
+                    {{ res.RES_Nom }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="showError('firstChoice', 'residence')"
+                  class="text-red-500 text-sm mt-1"
+                >
+                  Ce champ est obligatoire
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Type*</label
+                >
+                <select
+                  formControlName="accommodation"
+                  (change)="
+                    updateBuildings('firstChoice');
+                    updateApartments('firstChoice');
+                    updateRooms('firstChoice');
+                    updateTarifs('firstChoice')
+                  "
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un type</option>
+                  <option
+                    *ngFor="let accommodation of firstChoiceAccomodationTypes"
+                    [value]="accommodation.AMNGMNT_ID"
+                  >
+                    {{ accommodation.AMNGMNT_TYPE }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="showError('firstChoice', 'accommodation')"
+                  class="text-red-500 text-sm mt-1"
+                >
+                  Ce champ est obligatoire
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Bâtiment</label
+                >
+                <select
+                  formControlName="building"
+                  (change)="updateApartments('firstChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un bâtiment</option>
+                  <option
+                    *ngFor="let building of firstChoiceBuildings"
+                    [value]="building.BAT_ID"
+                  >
+                    {{ building.BAT_NOM }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Appartement</label
+                >
+                <select
+                  formControlName="apartment"
+                  (change)="updateRooms('firstChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un appartement</option>
+                  <option
+                    *ngFor="let apartment of firstChoiceApartments"
+                    [value]="apartment.APRT_ID"
+                  >
+                    {{ apartment.APRT_NOM }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Chambre</label
+                >
+                <select
+                  formControlName="room"
+                  (change)="updateTarifs('firstChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une chambre</option>
+                  <option
+                    *ngFor="let room of firstChoiceRooms"
+                    [value]="room.CHBR_ID"
+                  >
+                    {{ room.NUMEROCHAMBRE }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- First Choice Pricing -->
+            <app-tarifs-table
+              *ngIf="firstChoiceFees.length > 0"
+              [fees]="firstChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
+          </div>
+        </div>
+
+        <!-- Second Choice -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-semibold mb-6">Deuxième choix</h2>
+          <div
+            class="w-full flex flex-col gap-y-4 md:gap-y-0 justify-between md:flex-row md:items-start md:gap-x-4"
+          >
+            <div class="w-full space-y-2" formGroupName="secondChoice">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">
+                  Résidence*
+                  <span
+                    class="ml-1 text-gray-400 hover:text-gray-600 cursor-help"
+                    title="Sélectionnez votre résidence préférée"
+                    >ⓘ</span
+                  >
+                </label>
+                <select
+                  formControlName="residence"
+                  (change)="
+                    updateAccomodationTypes('secondChoice');
+                    updateBuildings('secondChoice')
+                  "
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une résidence</option>
+                  <option
+                    *ngFor="let residency of residencies"
+                    [value]="residency.RES_Id"
+                  >
+                    {{ residency.RES_Nom }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="showError('secondChoice', 'residence')"
+                  class="text-red-500 text-sm mt-1"
+                >
+                  Ce champ est obligatoire
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Aménagment*</label
+                >
+                <select
+                  formControlName="accommodation"
+                  (change)="
+                    updateBuildings('secondChoice');
+                    updateApartments('secondChoice');
+                    updateRooms('secondChoice');
+                    updateTarifs('secondChoice')
+                  "
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un type</option>
+                  <option
+                    *ngFor="let accommodation of secondChoiceAccomodationTypes"
+                    [value]="accommodation.AMNGMNT_ID"
+                  >
+                    {{ accommodation.AMNGMNT_TYPE }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Bâtiment</label
+                >
+                <select
+                  formControlName="building"
+                  (change)="updateApartments('secondChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un bâtiment</option>
+                  <option
+                    *ngFor="let building of secondChoiceBuildings"
+                    [value]="building.BAT_ID"
+                  >
+                    {{ building.BAT_NOM }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Appartement</label
+                >
+                <select
+                  formControlName="apartment"
+                  (change)="updateRooms('secondChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez un appartement</option>
+                  <option
+                    *ngFor="let apartment of secondChoiceApartments"
+                    [value]="apartment.APRT_ID"
+                  >
+                    {{ apartment.APRT_NOM }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700"
+                  >Chambre</label
+                >
+                <select
+                  formControlName="room"
+                  (change)="updateTarifs('secondChoice')"
+                  class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                >
+                  <option value="">Sélectionnez une chambre</option>
+                  <option
+                    *ngFor="let room of secondChoiceRooms"
+                    [value]="room.CHBR_ID"
+                  >
+                    {{ room.NUMEROCHAMBRE }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <!-- Second Choice Pricing -->
+            <app-tarifs-table
+              *ngIf="secondChoiceFees.length > 0"
+              [fees]="secondChoiceFees"
+              header="Tarifs"
+            ></app-tarifs-table>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="space-y-2">
+          <label for="remarks" class="block text-sm font-medium text-gray-700">
+            Remarques
+            <span
+              class="ml-1 text-gray-400 hover:text-gray-600 cursor-help"
+              title="Ajoutez des informations complémentaires à votre demande"
+              >ⓘ</span
+            >
+          </label>
+          <textarea
+            id="remarks"
+            formControlName="remarks"
+            rows="4"
+            placeholder="Ajoutez ici vos remarques ou informations complémentaires..."
+            class="p-2 mt-1 block resize-none w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 placeholder:text-gray-400 text-sm min-h-[6rem]"
+          ></textarea>
+          <p class="mt-1 text-sm text-gray-500">
+            Facultatif - Maximum 500 caractères
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4">
+        <button
+          type="button"
+          (click)="nextStep()"
+          [disabled]="!reservationForm.valid"
+          class="px-4 py-2 cursor-pointer border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Suivant
+        </button>
+      </div>
+    </form>

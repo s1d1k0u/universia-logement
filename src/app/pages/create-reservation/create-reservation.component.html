@@ -1,8 +1,8 @@
 <div class="min-w-full h-full bg-white mx-auto px-4 py-8">
   <div class="max-w-full md:min-w-lg md:max-w-6xl mx-auto">
     <!-- Stepper -->
-    <div class="relative mb-4">
-      <div class="flex justify-between">
+    <div class="relative">
+      <div class="flex justify-between md:justify-around p-4">
         <div
           *ngFor="let step of steps; let i = index"
           class="flex items-center"
@@ -35,7 +35,11 @@
       </div>
     </div>
 
-    <form *ngIf="currentStep === 1" [formGroup]="bookingForm" class="space-y-6">
+    <form
+      *ngIf="currentStep === 1"
+      [formGroup]="reservationForm"
+      class="space-y-6"
+    >
       <!-- Step 1: Choices Selection -->
       <div class="space-y-4">
         <!-- First Choice -->
@@ -59,17 +63,16 @@
                   formControlName="residence"
                   (change)="
                     updateAccomodationTypes('firstChoice');
-                    updateBuildings('firstChoice');
-                    updateTarifs('firstChoice')
+                    updateBuildings('firstChoice')
                   "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez une résidence</option>
                   <option
                     *ngFor="let res of residencies; let idx = index"
-                    [value]="res.value"
+                    [value]="res.RES_Id"
                   >
-                    {{ res.display }}
+                    {{ res.RES_Nom }}
                   </option>
                 </select>
                 <div
@@ -86,15 +89,20 @@
                 >
                 <select
                   formControlName="accommodation"
-                  (change)="updateTarifs('firstChoice')"
+                  (change)="
+                    updateBuildings('firstChoice');
+                    updateApartments('firstChoice');
+                    updateRooms('firstChoice');
+                    updateTarifs('firstChoice')
+                  "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un type</option>
                   <option
                     *ngFor="let accommodation of firstChoiceAccomodationTypes"
-                    [value]="accommodation.value"
+                    [value]="accommodation.AMNGMNT_ID"
                   >
-                    {{ accommodation.display.toLocaleUpperCase() }}
+                    {{ accommodation.AMNGMNT_TYPE }}
                   </option>
                 </select>
                 <div
@@ -111,14 +119,15 @@
                 >
                 <select
                   formControlName="building"
+                  (change)="updateApartments('firstChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un bâtiment</option>
                   <option
                     *ngFor="let building of firstChoiceBuildings"
-                    [value]="building.value"
+                    [value]="building.BAT_ID"
                   >
-                    {{ building.display }}
+                    {{ building.BAT_NOM }}
                   </option>
                 </select>
               </div>
@@ -129,10 +138,16 @@
                 >
                 <select
                   formControlName="apartment"
+                  (change)="updateRooms('firstChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un appartement</option>
-                  <option value="3">3</option>
+                  <option
+                    *ngFor="let apartment of firstChoiceApartments"
+                    [value]="apartment.APRT_ID"
+                  >
+                    {{ apartment.APRT_NOM }}
+                  </option>
                 </select>
               </div>
 
@@ -142,10 +157,16 @@
                 >
                 <select
                   formControlName="room"
+                  (change)="updateTarifs('firstChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez une chambre</option>
-                  <option value="3">3</option>
+                  <option
+                    *ngFor="let room of firstChoiceRooms"
+                    [value]="room.CHBR_ID"
+                  >
+                    {{ room.NUMEROCHAMBRE }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -179,17 +200,16 @@
                   formControlName="residence"
                   (change)="
                     updateAccomodationTypes('secondChoice');
-                    updateBuildings('secondChoice');
-                    updateTarifs('secondChoice')
+                    updateBuildings('secondChoice')
                   "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez une résidence</option>
                   <option
                     *ngFor="let residency of residencies"
-                    [value]="residency.value"
+                    [value]="residency.RES_Id"
                   >
-                    {{ residency.display }}
+                    {{ residency.RES_Nom }}
                   </option>
                 </select>
                 <div
@@ -202,19 +222,24 @@
 
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700"
-                  >Type*</label
+                  >Aménagment*</label
                 >
                 <select
                   formControlName="accommodation"
-                  (change)="updateTarifs('secondChoice')"
+                  (change)="
+                    updateBuildings('secondChoice');
+                    updateApartments('secondChoice');
+                    updateRooms('secondChoice');
+                    updateTarifs('secondChoice')
+                  "
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un type</option>
                   <option
                     *ngFor="let accommodation of secondChoiceAccomodationTypes"
-                    [value]="accommodation.value"
+                    [value]="accommodation.AMNGMNT_ID"
                   >
-                    {{ accommodation.display }}
+                    {{ accommodation.AMNGMNT_TYPE }}
                   </option>
                 </select>
               </div>
@@ -225,14 +250,15 @@
                 >
                 <select
                   formControlName="building"
+                  (change)="updateApartments('secondChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un bâtiment</option>
                   <option
                     *ngFor="let building of secondChoiceBuildings"
-                    [value]="building.value"
+                    [value]="building.BAT_ID"
                   >
-                    {{ building.display }}
+                    {{ building.BAT_NOM }}
                   </option>
                 </select>
               </div>
@@ -243,10 +269,16 @@
                 >
                 <select
                   formControlName="apartment"
+                  (change)="updateRooms('secondChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez un appartement</option>
-                  <option value="3">3</option>
+                  <option
+                    *ngFor="let apartment of secondChoiceApartments"
+                    [value]="apartment.APRT_ID"
+                  >
+                    {{ apartment.APRT_NOM }}
+                  </option>
                 </select>
               </div>
 
@@ -256,10 +288,16 @@
                 >
                 <select
                   formControlName="room"
+                  (change)="updateTarifs('secondChoice')"
                   class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                 >
                   <option value="">Sélectionnez une chambre</option>
-                  <option value="3">3</option>
+                  <option
+                    *ngFor="let room of secondChoiceRooms"
+                    [value]="room.CHBR_ID"
+                  >
+                    {{ room.NUMEROCHAMBRE }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -287,7 +325,7 @@
             formControlName="remarks"
             rows="4"
             placeholder="Ajoutez ici vos remarques ou informations complémentaires..."
-            class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 placeholder:text-gray-400 text-sm resize-y min-h-[6rem]"
+            class="p-2 mt-1 block resize-none w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 placeholder:text-gray-400 text-sm min-h-[6rem]"
           ></textarea>
           <p class="mt-1 text-sm text-gray-500">
             Facultatif - Maximum 500 caractères
@@ -299,8 +337,8 @@
         <button
           type="button"
           (click)="nextStep()"
-          [disabled]="!bookingForm.valid"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="!reservationForm.valid"
+          class="px-4 py-2 cursor-pointer border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Suivant
         </button>
@@ -309,75 +347,68 @@
 
     <!-- Step 2: Validation -->
     <div *ngIf="currentStep === 2">
-      <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="text-xl font-semibold mb-6">Validation de vos choix</h2>
-
-        <div class="space-y-4">
+      <div class="bg-white p-4 space-y-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold mb-6">Validation de vos choix</h2>
+          <div class="flex justify-end space-x-4">
+            <button
+              (click)="previousStep()"
+              class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer disabled:cursor-not-allowed"
+            >
+              Précédent
+            </button>
+            <button
+              (click)="nextStep()"
+              class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            >
+              Valider
+            </button>
+          </div>
+        </div>
+        <div
+          class="space-y-4 rounded-lg shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           <!-- First Choice Summary -->
-          <div class="flex flex-col md:flex-row gap-4 p-4">
-            <app-choice-summary
-              [data]="{
+          <app-choice-summary
+            [data]="{
                   header: 'Votre Premier Choix',
                   residence: getResidenceName('firstChoice'),
                   accomodation: getAccommodationName('firstChoice'),
                   building: getBuildingName('firstChoice'),
-                  apartment:
-                    bookingForm.get('firstChoice')?.get('apartment')?.value ??
-                    'Non spécifié',
-                  room:
-                    bookingForm.get('firstChoice')?.get('room')?.value ??
-                    'Non spécifié',
+                  apartment: getApartmentName('firstChoice'),
+                  room: getRoomName('firstChoice'),
                 }"
-            ></app-choice-summary>
-            <app-tarifs-table
-              [fees]="firstChoiceFees"
-              header="Tarifs"
-            ></app-tarifs-table>
-          </div>
+          ></app-choice-summary>
+          <app-tarifs-table
+            *ngIf="firstChoiceFees.length > 0"
+            [fees]="firstChoiceFees"
+            header="Tarifs"
+          ></app-tarifs-table>
 
           <!-- Second Choice Summary -->
-          <div class="flex flex-col md:flex-row gap-4 p-4">
-            <app-choice-summary
-              [data]="{
+          <app-choice-summary
+            [data]="{
                   header: 'Votre Deuxième Choix',
                   residence: getResidenceName('secondChoice'),
                   accomodation: getAccommodationName('secondChoice'),
                   building: getBuildingName('secondChoice'),
-                  apartment:
-                    bookingForm.get('secondChoice')?.get('apartment')?.value ??
-                    'Non spécifié',
-                  room:
-                    bookingForm.get('secondChoice')?.get('room')?.value ??
-                    'Non spécifié',
+                  apartment: getApartmentName('secondChoice'),
+                  room: getRoomName('secondChoice'),
                 }"
-            ></app-choice-summary>
-            <app-tarifs-table
-              [fees]="secondChoiceFees"
-              header="Tarifs"
-            ></app-tarifs-table>
-          </div>
+          ></app-choice-summary>
+          <app-tarifs-table
+            *ngIf="secondChoiceFees.length > 0"
+            [fees]="secondChoiceFees"
+            header="Tarifs"
+          ></app-tarifs-table>
         </div>
-      </div>
-      <div class="flex justify-end space-x-4 p-4">
-        <button
-          (click)="previousStep()"
-          class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-        >
-          Précédent
-        </button>
-        <button
-          (click)="nextStep()"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Valider
-        </button>
       </div>
     </div>
 
     <!-- Display And Print Summary -->
-    <div *ngIf="currentStep === 3" class="bg-white rounded-lg shadow p-4">
-      <div [ngSwitch]="booking?.status">
-        <div *ngSwitchCase="'PENDING'">
+    <div *ngIf="currentStep === 3" class="bg-white p-4">
+      <div [ngSwitch]="reservation?.Et_ID">
+        <div *ngSwitchCase="ReservationStatus.EN_COURS_DE_VALIDATION_ADMIN">
           <!--Confirmation Message-->
           <div
             class="my-8 rounded-lg bg-green-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
@@ -399,7 +430,10 @@
                 (click)="showDetails = !showDetails"
                 class="text-purple-600"
               >
-                <i-lucide [img]="showDetails ? eyeOff : eye"></i-lucide>
+                <i-lucide
+                  [img]="showDetails ? eyeOff : eye"
+                  title="Afficher les détails"
+                ></i-lucide>
               </button>
               <button
                 (click)="printSummary()"
@@ -423,53 +457,132 @@
             </div>
           </div>
 
-          <div class="space-y-4" *ngIf="showDetails" id="summaryToPrint">
+          <div
+            class="space-y-4 rounded-lg shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+            *ngIf="showDetails"
+            id="summaryToPrint"
+          >
             <!-- First Choice Summary -->
-            <div class="flex flex-col md:flex-row gap-4 p-4">
-              <app-choice-summary
-                [data]="{
+            <app-choice-summary
+              [data]="{
                 header: 'Votre Premier Choix',
-                residence: getResidenceName('firstChoice'),
-                accomodation: getAccommodationName('firstChoice'),
-                building: getBuildingName('firstChoice'),
-                apartment:
-                  bookingForm.get('firstChoice')?.get('apartment')?.value ??
-                  'Non spécifié',
-                room:
-                    bookingForm.get('firstChoice')?.get('room')?.value ??
-                    'Non spécifié',
+                residence: summary!.firstChoice.residence,
+                accomodation: summary!.firstChoice.accommodation,
+                building: summary!.firstChoice.building,
+                apartment: summary!.firstChoice.apartment,
+                room: summary!.firstChoice.room,
               }"
-              ></app-choice-summary>
-              <app-tarifs-table
-                [fees]="firstChoiceFees"
-                header="Tarifs"
-              ></app-tarifs-table>
-            </div>
+            ></app-choice-summary>
+            <app-tarifs-table
+              [fees]="summary!.firstChoice.tarifs"
+              header="Tarifs"
+            ></app-tarifs-table>
 
             <!-- Second Choice Summary -->
-            <div class="flex flex-col md:flex-row gap-4 p-4">
-              <app-choice-summary
-                [data]="{
+            <app-choice-summary
+              [data]="{
                 header: 'Votre Deuxième Choix',
-                residence: getResidenceName('secondChoice'),
-                accomodation: getAccommodationName('secondChoice'),
-                building: getBuildingName('secondChoice'),
-                apartment:
-                  bookingForm.get('secondChoice')?.get('apartment')?.value ??
-                  'Non spécifié',
-                room:
-                    bookingForm.get('secondChoice')?.get('room')?.value ??
-                    'Non spécifié',
+                residence: summary!.secondChoice.residence,
+                accomodation: summary!.secondChoice.accommodation,
+                building: summary!.secondChoice.building,
+                apartment:summary!.secondChoice.apartment,
+                room:summary!.secondChoice.room,
               }"
+            ></app-choice-summary>
+            <app-tarifs-table
+              [fees]="summary!.secondChoice.tarifs"
+              header="Tarifs"
+            ></app-tarifs-table>
+          </div>
+        </div>
+        <div
+          *ngSwitchCase="ReservationStatus.EN_COURS_DE_CONFIRMATION"
+          class="space-y-4 p-4"
+        >
+          <!-- Success Message -->
+          <div class="bg-green-100 rounded-lg text-center py-4">
+            <h2 class="text-xl font-semibold text-green-800 mb-2">
+              Félicitations ! Votre réservation a été acceptée
+            </h2>
+            <p class="text-green-700">
+              Veuillez prendre connaissance du règlement intérieur avant de
+              procéder au paiement.
+            </p>
+          </div>
+
+          <!-- reservation Summary-->
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-semibold mb-4">
+                Le choix retenu <span class="hidden md:inline-block">pour votre réservation</span>
+              </h3>
+              <div
+                class="flex flex-col md:flex-row gap-4 md:gap-x-4 md:justify-end"
+              >
+                <button
+                  (click)="acceptOffer()"
+                  class="group w-full flex items-center md:cursor-pointer md:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                >
+                  Continuer
+                </button>
+              </div>
+            </div>
+            <div
+              class="space-y-4 rounded-lg shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+              id="summaryToPrint"
+            >
+              <!-- First Choice Summary -->
+              <app-choice-summary
+                *ngIf="summary?.firstChoice?.isValidated"
+                [data]="{
+                  header: 'Votre Premier Choix',
+                  residence: summary!.firstChoice.residence,
+                  accomodation: summary!.firstChoice.accommodation,
+                  building: summary!.firstChoice.building,
+                  apartment: summary!.firstChoice.apartment,
+                  room: summary!.firstChoice.room,
+                }"
               ></app-choice-summary>
               <app-tarifs-table
-                [fees]="secondChoiceFees"
+                *ngIf="summary?.firstChoice?.isValidated"
+                [fees]="summary!.firstChoice.tarifs"
+                header="Tarifs"
+              ></app-tarifs-table>
+
+              <!-- Second Choice Summary -->
+              <app-choice-summary
+                *ngIf="summary?.secondChoice?.isValidated"
+                [data]="{
+                  header: 'Votre Deuxième Choix',
+                  residence: summary!.secondChoice.residence || 'Non spécifié',
+                  accomodation: summary!.secondChoice.accommodation,
+                  building: summary!.secondChoice.building,
+                  apartment:summary!.secondChoice.apartment,
+                  room:summary!.secondChoice.room,
+                }"
+              ></app-choice-summary>
+              <app-tarifs-table
+                *ngIf="summary?.secondChoice?.isValidated"
+                [fees]="summary!.secondChoice.tarifs"
                 header="Tarifs"
               ></app-tarifs-table>
             </div>
           </div>
+
+          <!-- Rules -->
+          <div>
+            <app-modal
+              [isOpen]="isModalOpen"
+              (closeModal)="closeModal($event)"
+              (confirmModal)="handleConfirm($event)"
+              [title]="'Règlement Intérieur'"
+              ><div class="bg-gray-50 p-6 rounded-lg">
+                <app-reglement></app-reglement>
+              </div>
+            </app-modal>
+          </div>
         </div>
-        <div *ngSwitchCase="'REJECTED'" class="space-y-4">
+        <div *ngSwitchCase="ReservationStatus.REJETE" class="space-y-4">
           <div
             class="my-8 rounded-lg flex gap-x-3 items-center bg-red-500/65 text-white border px-4 py-2"
           >
@@ -483,112 +596,23 @@
             </p>
           </div>
         </div>
-        <div *ngSwitchCase="'ACCEPTED'" class="space-y-4">
-          <!-- Success Message -->
-          <div class="p-4 bg-green-100 rounded-lg">
-            <h2 class="text-xl font-semibold text-green-800 mb-2">
-              Félicitations ! Votre réservation a été acceptée
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div *ngIf="currentStep === 4" class="bg-white rounded-lg shadow p-4">
+      <h1 class="text-xl font-semibold mb-6">Paiement</h1>
+      <div class="space-y-4">
+        <div
+          class="my-8 rounded-lg flex flex-col gap-x-3 items-center bg-green-500/65 text-white border px-4 py-2"
+        >
+          <div class="flex items-center gap-x-2">
+            <i-lucide [img]="checkCircle" class="text-lg font-bold"></i-lucide>
+            <h2 class="text-lg font-medium">
+              Votre réservation a été acceptée
             </h2>
-            <p class="text-green-700">
-              Veuillez prendre connaissance du règlement intérieur avant de
-              procéder au paiement.
-            </p>
           </div>
-
-          <!-- Booking Summary-->
-          <div class="">
-            <h3 class="text-lg font-semibold mb-4">
-              Récapitulatif de votre réservation
-            </h3>
-            <app-choice-summary
-              [data]="{
-                header: 'Votre Choix',
-                residence: booking!.firstChoice.residence,
-                accomodation: booking!.firstChoice.accommodation,
-                building: booking!.firstChoice.building,
-                apartment: booking!.firstChoice.apartment
-              }"
-            ></app-choice-summary>
-          </div>
-
-          <!-- Rules -->
-          <div class="bg-gray-50 p-6 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4">Règlement intérieur</h3>
-            <div class="prose prose-sm max-w-none">
-              <div
-                class="h-64 overflow-y-auto bg-white p-4 rounded border"
-              ></div>
-            </div>
-          </div>
-
-          <!--Rules Acceptance-->
-          <div class="flex flex-col gap-4">
-            <div class="flex items-center gap-x-2">
-              <input
-                type="checkbox"
-                id="rulesAcceptance"
-                class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-              />
-              <label for="rulesAcceptance" class="text-sm text-gray-700">
-                J'ai lu et j'accepte le règlement intérieur
-              </label>
-            </div>
-            <button
-              [disabled]="!rulesAccepted"
-              class="w-full md:w-auto px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Procéder au paiement
-            </button>
-          </div>
-        </div>
-        <div *ngSwitchCase="'ALTERNATIVE_OFFERED'">
-          <div
-            class="my-8 rounded-lg bg-yellow-500/65 text-white flex justify-between border px-4 py-2 gap-x-2 items-center"
-          >
-            <div class="flex items-center gap-x-2">
-              <span class="text-lg">!</span>
-              <h1>
-                Votre réservation a été acceptée avec des modifications.
-                Veuillez trouver les details ci-dessous.
-              </h1>
-            </div>
-          </div>
-          <!-- Booking Summary-->
-          <div class="">
-            <h3 class="text-lg font-semibold mb-4">Le choix alternatif</h3>
-            <app-choice-summary
-              [data]="{
-                header: 'Votre Choix',
-                residence: getResidenceName('firstChoice'),
-                accomodation: getAccommodationName('firstChoice'),
-                building: getBuildingName('firstChoice'),
-                apartment:
-                  bookingForm.get('firstChoice')?.get('apartment')?.value ??
-                  'Non spécifié',
-                room:
-                  bookingForm.get('firstChoice')?.get('room')?.value ?? 
-                  'Non spécifié',
-              }"
-            ></app-choice-summary>
-            <div class="mt-8 space-y-6">
-              <div
-                class="flex flex-col md:flex-row gap-4 md:gap-x-4 md:justify-end"
-              >
-                <button
-                  (click)="rejectAlternative()"
-                  class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700"
-                >
-                  Refuser et modifier mes choix
-                </button>
-                <button
-                  (click)="acceptAlternative()"
-                  class="w-full md:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
-                >
-                  Accepter cette proposition
-                </button>
-              </div>
-            </div>
-          </div>
+          <h2>Veuillez vous rendre dans nos locaux pour régler la facture</h2>
         </div>
       </div>
     </div>

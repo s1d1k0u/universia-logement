@@ -8,11 +8,14 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Loader, CheckCircle, AlertTriangle, LucideAngularModule } from 'lucide-angular';
-
 import {
-  ReservationService,
-} from '../../../services/reservation.service';
+  Loader,
+  CheckCircle,
+  AlertTriangle,
+  LucideAngularModule,
+} from 'lucide-angular';
+
+import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
   selector: 'app-new-reservation',
@@ -29,7 +32,7 @@ export class NewReservationComponent {
   readonly loader = Loader;
   readonly checkCircle = CheckCircle;
   readonly alertTriangle = AlertTriangle;
-  
+
   errorMessage = '';
   loading = false;
   isSuccessful = false;
@@ -59,16 +62,17 @@ export class NewReservationComponent {
      * 2. Get the member with the registration number
      * 3. Verify the matricule and the the email
      */
-    if (!this.studentForm.invalid) {
+    if (this.studentForm.valid) {
       try {
         this.loading = true;
         this.reservationService
-          .getMember(this.registrationNumber?.value, this.email?.value)
+          .getMember(this.registrationNumber!.value, this.email!.value)
           .subscribe((member) => {
             if (member.length > 0) {
               this.isSuccessful = true;
               this.errorMessage = '';
               this.reservationService.setMember(member[0]);
+              localStorage.setItem('member', JSON.stringify(member[0]));
               setTimeout(() => {
                 console.log(this.reservationService.member);
                 this.reservationService.member;

@@ -1,128 +1,55 @@
-<!-- Main Content -->
 <div
-  class="w-full min-h-[70vh] bg-custom py-12 px-4 bg-cover bg-center flex items-center justify-center relative"
+  class="flex flex-col items-center min-h-screen bg-gray-50 p-4 py-14"
 >
-  <div class="min-h-full py-12 px-4 md:px-6 lg:px-8 relative">
-    <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-8">
-        Modifiez Vos Informations
-      </h2>
-
-      <form [formGroup]="profileForm" (submit)="onSubmit()" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- First Name -->
-          <div>
-            <label
-              for="firstName"
-              class="block text-sm font-medium text-gray-700"
-            >
-              Nom
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              formControlName="firstName"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:opacity-60"
-              placeholder="Enter your first name"
-            />
-            <div class="h-2 md:h-4 mb-1 md:mb-0">
-              <p
-                *ngIf="firstName?.touched && firstName?.invalid"
-                class="text-red-500 text-xs font-semibold text-left"
-              >
-                <span *ngIf="firstName?.errors?.['required']"
-                  >* Veuillez entrer votre nom</span
-                >
-              </p>
-            </div>
-          </div>
-
-          <!-- Last Name -->
-          <div>
-            <label
-              for="lastName"
-              class="block text-sm font-medium text-gray-700"
-            >
-              Prénom
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              formControlName="lastName"
-              class="mt-1 px-3 py-2 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:outline-none focus:border-violet-500 focus:ring-violet-500 sm:text-sm"
-              placeholder="Enter your last name"
-            />
-            <div class="h-2 md:h-4 mb-1 md:mb-0">
-              <p
-                *ngIf="lastName?.touched && lastName?.invalid"
-                class="text-red-500 text-xs font-semibold text-left"
-              >
-                <span *ngIf="lastName?.errors?.['required']"
-                  >* Veuillez entrer votre prénom</span
-                >
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Genre -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"
-            >Genre</label
-          >
-          <div class="flex flex-wrap gap-6">
-            <label class="flex items-center">
-              <input
-                type="radio"
-                formControlName="genre"
-                value="male"
-                class="form-radio h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-              />
-              <span class="ml-2 text-gray-700">Homme</span>
-            </label>
-            <label class="flex items-center">
-              <input
-                type="radio"
-                formControlName="genre"
-                value="female"
-                class="form-radio h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-              />
-              <span class="ml-2 text-gray-700">Femme</span>
-            </label>
-            <label class="flex items-center">
-              <input
-                type="radio"
-                formControlName="genre"
-                value="other"
-                class="form-radio h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-              />
-              <span class="ml-2 text-gray-700">Autre</span>
-            </label>
-          </div>
-          <div class="h-2 md:h-4 mb-1 md:mb-0">
-            <p
-              *ngIf="genre?.touched && genre?.invalid"
-              class="text-red-500 text-xs font-semibold text-left"
-            >
-              <span *ngIf="genre?.errors?.['required']"
-                >* Veuillez selectionner votre genre</span
-              >
-            </p>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="pt-4">
-          <button
-            type="submit"
-            [disabled]="profileForm.invalid"
-            class="w-full md:w-auto flex justify-center cursor-pointer items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span *ngIf="!isSubmitting">Continuer</span>
-            <span *ngIf="isSubmitting">En cours...</span>
-          </button>
-        </div>
-      </form>
+  <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8 text-center">
+    <!-- Success icon using Lucide Angular -->
+    <div class="flex justify-center mb-6">
+      <i-lucide [img]="checkCircle" class="text-green-500 w-20 h-20"></i-lucide>
     </div>
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Email Confirmé</h1>
+    <p class="text-gray-600 mb-6">
+      Merci d&apos;avoir confirmé votre adresse e-mail. Votre compte est
+      maintenant entièrement activé.
+    </p>
+
+    <div class="border-t border-gray-200 my-6"></div>
+
+    <p class="text-gray-700 mb-6">
+      Vous pouvez désormais poursuivre votre processus de réservation.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button
+        class="group px-6 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 transition duration-200 flex items-center justify-center gap-2"
+        (click)="goHome()"
+      >
+        <i-lucide
+          [img]="home"
+          class="w-6 h-6 transition-transform duration-200 group-hover:-translate-x-1"
+        ></i-lucide>
+        Accueil
+      </button>
+
+      <button
+        class="group px-6 py-2 bg-white text-green-600 border border-green-600 rounded-md hover:bg-green-50 transition duration-200 flex items-center justify-center gap-2"
+        (click)="onContinue()"
+      >
+        Poursuivre
+        <i-lucide
+          [img]="chevronRight"
+          class="w-6 h-6 transition-transform duration-200 group-hover:translate-x-1"
+        ></i-lucide>
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-8 text-sm text-gray-500">
+    <p>
+      Si vous n'avez pas demandé cette confirmation, veuillez
+      <a href="/contact" class="text-violet-600 hover:underline"
+        >contacter le support</a
+      >.
+    </p>
   </div>
 </div>

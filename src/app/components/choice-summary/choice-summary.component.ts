@@ -6,7 +6,7 @@ interface ChoiceSummaryData {
   accomodation: string;
   building: string;
   apartment?: string;
-  room?: string;
+  room?: string | number;
 }
 
 @Component({

@@ -1,0 +1,135 @@
+<div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+  <!-- Header -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Équipements supplémentaires
+    </h2>
+    <p class="text-gray-600 mt-2">
+      Personnalisez votre logement avec des équipements additionnels
+    </p>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="mb-6 border-b border-gray-200">
+    <nav class="flex space-x-8" aria-label="Categories">
+      <button
+        *ngFor="let category of categories"
+        (click)="selectedCategory = category"
+        [class.border-purple-500]="selectedCategory === category"
+        [class.text-purple-600]="selectedCategory === category"
+        class="border-b-2 pb-4 px-1 text-sm font-medium hover:text-purple-600 hover:border-purple-300 transition-colors"
+      >
+        {{ getCategoryLabel(category) }}
+      </button>
+    </nav>
+  </div>
+
+  <!-- Equipment Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div
+      *ngFor="let equipment of filteredEquipments"
+      class="relative border border-gray-200 rounded-lg p-4 hover:border-purple-500 transition-all duration-200"
+      [class.bg-purple-50]="isSelected(equipment)"
+    >
+      <!-- Equipment Image -->
+      <div class="mb-4 aspect-video bg-gray-100 rounded-md overflow-hidden">
+        <img
+          *ngIf="equipment.image"
+          [src]="equipment.image"
+          [alt]="equipment.name"
+          class="w-full h-full object-cover"
+        />
+        <div
+          *ngIf="!equipment.image"
+          class="w-full h-full flex items-center justify-center text-gray-400"
+        >
+          <i class="fas fa-box text-3xl"></i>
+        </div>
+      </div>
+
+      <!-- Equipment Info -->
+      <div class="space-y-2">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-medium text-gray-900">{{ equipment.name }}</h3>
+            <p class="text-sm text-gray-500">{{ equipment.description }}</p>
+          </div>
+          <button
+            (click)="toggleEquipment(equipment)"
+            class="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center border transition-colors"
+            [class.bg-purple-600]="isSelected(equipment)"
+            [class.border-purple-600]="isSelected(equipment)"
+            [class.text-white]="isSelected(equipment)"
+          >
+            <i class="fas" [class.fa-check]="isSelected(equipment)"></i>
+          </button>
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <span class="font-medium text-purple-600">
+            {{ equipment.price | currency : "EUR" : "symbol" : "1.0-0" }}/mois
+          </span>
+          <span
+            *ngIf="equipment.available"
+            class="text-green-600 flex items-center gap-1"
+          >
+            <i class="fas fa-check-circle text-xs"></i>
+            Disponible
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected Equipment Summary -->
+  <div
+    *ngIf="selectedEquipments.length > 0"
+    class="mt-8 bg-gray-50 rounded-lg p-6"
+  >
+    <h3 class="text-lg font-medium text-gray-900 mb-4">
+      Équipements sélectionnés
+    </h3>
+    <div class="space-y-3">
+      <div
+        *ngFor="let item of selectedEquipments"
+        class="flex items-center justify-between text-sm"
+      >
+        <div class="flex items-center gap-2">
+          <button
+            (click)="toggleEquipment(item)"
+            class="text-gray-400 hover:text-red-500 transition-colors"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+          <span>{{ item.name }}</span>
+        </div>
+        <span class="font-medium">
+          {{ item.price | currency : "EUR" : "symbol" : "1.0-0" }}/mois
+        </span>
+      </div>
+
+      <!-- Total -->
+      <div class="pt-4 mt-4 border-t border-gray-200">
+        <div class="flex items-center justify-between font-medium">
+          <span class="text-gray-900">Total mensuel</span>
+          <span class="text-lg text-purple-600">
+            {{ totalPrice | currency : "EUR" : "symbol" : "1.0-0" }}/mois
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="selectedEquipments.length === 0"
+    class="mt-8 text-center py-8 px-4 bg-gray-50 rounded-lg"
+  >
+    <i class="fas fa-box text-4xl text-gray-400 mb-3"></i>
+    <h3 class="text-lg font-medium text-gray-900">
+      Aucun équipement sélectionné
+    </h3>
+    <p class="text-gray-500 mt-2">
+      Sélectionnez des équipements pour personnaliser votre logement
+    </p>
+  </div>
+</div>

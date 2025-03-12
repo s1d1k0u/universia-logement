@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-6">
+<div class="md:max-w-5xl mx-auto px-4 py-6">
   <div
     class="bg-white rounded-xl shadow-lg overflow-hidden"
     *ngIf="reservation"
@@ -54,7 +54,7 @@
                 >
                   <lucide-icon
                     [img]="x"
-                    class="w-6 h-6 text-red-500 ml-2 transition-transform duration-200 group-hover:translate-x-1"
+                    class="w-6 h-6 text-red-500 transition-transform duration-200 group-hover:translate-x-1"
                   ></lucide-icon>
                   Annuler
                 </button>
@@ -67,7 +67,7 @@
                   Continuer
                   <i-lucide
                     [img]="arrowRight"
-                    class="w-6 h-6 ml-2 transition-transform duration-200 group-hover:translate-x-1"
+                    class="w-6 h-6 transition-transform duration-200 group-hover:translate-x-1"
                   ></i-lucide>
                 </button>
               </div>
