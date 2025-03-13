@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  Member,
   ReservationService,
   UpdateMember,
 } from '../../../services/reservation.service';
@@ -27,6 +28,9 @@ import {
 export class ProfileComponent {
   reservationService: ReservationService = inject(ReservationService);
   router: Router = inject(Router);
+  activeRoute: ActivatedRoute = inject(ActivatedRoute);
+
+  member?: Member;
 
   readonly checkCircle = CheckCircle;
   readonly home = Home;
@@ -38,5 +42,24 @@ export class ProfileComponent {
 
   onContinue() {
     this.router.navigate(['/reservation']);
+  }
+
+  ngOnInit() {
+    this.activeRoute.queryParams.subscribe((params) => {
+      const MBR_ID = params['MBR_ID'];
+      console.log(MBR_ID);
+      if (MBR_ID) {
+        this.reservationService.getMemberById(MBR_ID).subscribe({
+          next: (member) => {
+            this.member = member[0];
+          },
+          error: (error) => {
+            alert(
+              "Une erreur s'est produite lors de la vérification de l'adhérent"
+            );
+          },
+        });
+      }
+    });
   }
 }

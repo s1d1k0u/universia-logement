@@ -266,6 +266,12 @@ export class ReservationService {
     );
   }
 
+  getMemberById(mbrId: string): Observable<Member[]> {
+    return this.http.get<Member[]>(
+      `${this.baseUrl}/SearchMemberByID?MBR_ID=${mbrId}`
+    );
+  }
+
   updateMember(newMember: UpdateMember): Observable<boolean> {
     return this.http.patch<any>(`${this.baseUrl}/UpdateMember`, newMember);
   }
